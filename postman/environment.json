@@ -1,0 +1,103 @@
+{
+	"id": "d937b403-1477-4afe-a589-de280df17bf8",
+	"name": "Fleet Testing",
+	"values": [
+		{
+			"key": "baseURL",
+			"value": "http://localhost:8080",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "date",
+			"value": "02-02-2008",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "pageParam",
+			"value": "page",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "limitParam",
+			"value": "limit",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "plateParam",
+			"value": "plate",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "plateQuery",
+			"value": "LAHG-7611",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "taxiId",
+			"value": "6418",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "accessToken",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "badToken",
+			"value": "notgoingtowork",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "testUserEmail",
+			"value": "admin@test.com",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "testUserPassword",
+			"value": "test",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "newUserEmail",
+			"value": "newUser@test.com",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "newUserPassword",
+			"value": "test",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "newUserId",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "pageQuery",
+			"value": "0",
+			"enabled": true
+		},
+		{
+			"key": "limitQuery",
+			"value": "3",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2024-08-27T23:03:12.763Z",
+	"_postman_exported_using": "Postman/11.9.2"
+}
