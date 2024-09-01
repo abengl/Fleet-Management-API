@@ -4,18 +4,21 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.util.Date;
 
 @Entity
 @Table(name = "trajectories")
-@Getter @Setter
+@Getter
+@Setter
 public class Trajectory {
+
 	@Id
 	private Integer id;
 
 	@ManyToOne
 	@JsonBackReference
-	@JoinColumn(name = "taxi_id",  referencedColumnName = "id",nullable = false)
+	@JoinColumn(name = "taxi_id", referencedColumnName = "id", nullable = false)
 	private Taxi taxiId;
 
 	@Column(name = "date")
@@ -27,7 +30,7 @@ public class Trajectory {
 	@Column(name = "longitude")
 	private double longitude;
 
-	public Trajectory() {}
-
+	public Trajectory() {
+	}
 }
 

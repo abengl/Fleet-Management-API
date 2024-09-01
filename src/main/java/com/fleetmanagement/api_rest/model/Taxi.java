@@ -9,7 +9,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "taxis")
-@Getter @Setter
+@Getter
+@Setter
 public class Taxi {
 
 	@Id
