@@ -10,6 +10,6 @@ public interface TaxiMapper {
 	TaxiMapper INSTANCE = Mappers.getMapper(TaxiMapper.class);
 
 	TaxiDTO toTaxiDTO(Taxi taxi); // Method to map Taxi to TaxiDTO
-	Taxi toTaxiEntity(TaxiDTO taxiDTO); // Method to map TaxiDTO to Taxi
+
 }
 
