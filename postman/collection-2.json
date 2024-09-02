@@ -1,10 +1,10 @@
 {
   "info": {
-    "_postman_id": "32e70d3b-ec6d-4135-b5f7-51247f442233",
+    "_postman_id": "87bd3f6b-a904-433d-8396-0353b4bdd17a",
     "name": "Fleet Management API - Without Auth",
     "description": "# ⛓️ Get started here\n\nPostman allows you to test your APIs using simple Javascript code. You can evaluate your response body, headers, cookies, and more using the [ChaiJS BDD](https://www.chaijs.com/api/bdd/) syntax.\n\nThis template guides you through the process of setting up an integration test to ensure that all individual components of an API function together seamlessly.\n\nThe API under test in this collection includes three endpoints for registering and receiving a token, accessing your unique generated name, and unregistering a token:\n\n- POST `/register`\n- POST `/unregister`\n- GET `/my-name`\n    \n\nBy setting up requests in the order of the operation, we can test the flow of data to and from the endpoints and ensure they work together as expected. We also verify that the data persists between requests on the back end.\n\n## 🔖 **How to use this template**\n\n**Step 1:** Check out the requests' documentation to learn more about -\n\n- what each request is meant to do.\n- the tests we've added against each one.\n    \n\n**Step 2:** Run this collection by clicking on \"Run\".\n\n<img src=\"https://content.pstmn.io/84019b0f-69c8-4c5f-98b9-2c90a6f9a0b1/Y29sbGVjdGlvbi1ydW5uZXItYnV0dG9uLmpwZWc=\" alt=\"\" height=\"103\" width=\"266\">\n\n**Step 3:** To customize this template, replace the request URLs with your API endpoints and add or edit the tests if needed.\n\n## ℹ️ Resources\n\n[Scripting in Postman](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/)\n\n[Test script examples](https://learning.postman.com/docs/writing-scripts/script-references/test-examples/)\n\n[Postman Sandbox API reference](https://learning.postman.com/docs/sending-requests/grpc/postman-sandbox-api/#writing-assertions)\n\n[Using the Collection Runner](https://learning.postman.com/docs/collections/running-collections/intro-to-collection-runs/)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "21472578"
+    "_exporter_id": "26533920"
   },
   "item": [
     {
@@ -234,112 +234,6 @@
           "response": []
         },
         {
-          "name": "trajectories - taxi not found",
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            },
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"/trajectories/{{taxiId}}?date={{date}} responds with 404 if taxi id not found\", () => {",
-                  "    pm.expect(pm.response.code).to.eq(404);",
-                  "});",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "GET",
-            "header": [
-              {
-                "key": "Cache-Control",
-                "value": "no-cache",
-                "name": "cache-control",
-                "type": "text"
-              },
-              {
-                "key": "Postman-Token",
-                "value": "<calculated when request is sent>",
-                "name": "postman-token",
-                "type": "text"
-              },
-              {
-                "key": "Host",
-                "value": "<calculated when request is sent>",
-                "name": "host",
-                "type": "text"
-              },
-              {
-                "key": "User-Agent",
-                "value": "PostmanRuntime/7.32.1",
-                "name": "user-agent",
-                "type": "text"
-              },
-              {
-                "key": "Accept",
-                "value": "*/*",
-                "name": "accept",
-                "type": "text"
-              },
-              {
-                "key": "Accept-Encoding",
-                "value": "gzip, deflate, br",
-                "name": "accept-encoding",
-                "type": "text"
-              },
-              {
-                "key": "Connection",
-                "value": "keep-alive",
-                "name": "connection",
-                "type": "text"
-              },
-              {
-                "key": "taxiId",
-                "value": "0000",
-                "type": "text"
-              },
-              {
-                "key": "date",
-                "value": "02-02-2008",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{baseURL}}/trajectories?taxiId=999999&date={{date}}",
-              "host": [
-                "{{baseURL}}"
-              ],
-              "path": [
-                "trajectories"
-              ],
-              "query": [
-                {
-                  "key": "taxiId",
-                  "value": "999999"
-                },
-                {
-                  "key": "date",
-                  "value": "{{date}}"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
           "name": "trajectories - missing date",
           "event": [
             {
@@ -475,11 +369,11 @@
                   "    pm.expect(pm.response.code).to.eq(200);",
                   "});",
                   "",
-                  "pm.test(\"/trajectories/latest endpoint responds with an array of trajectory id, latitiude, longiture, plate, timestamp\", () => {",
+                  "pm.test(\"/trajectories/latest endpoint responds with an array of trajectory id, latitiude, longiture, plate, date\", () => {",
                   "    const trajectories = pm.response.json();",
                   "    pm.expect(trajectories[0]).to.haveOwnProperty('taxiId');",
                   "    pm.expect(trajectories[0]).to.haveOwnProperty('plate');",
-                  "    pm.expect(trajectories[0]).to.haveOwnProperty('timestamp');",
+                  "    pm.expect(trajectories[0]).to.haveOwnProperty('date');",
                   "    pm.expect(trajectories[0]).to.haveOwnProperty('latitude');",
                   "    pm.expect(trajectories[0]).to.haveOwnProperty('longitude');",
                   "});",
@@ -500,6 +394,33 @@
               "path": [
                 "trajectories",
                 "latest"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "trajectories - taxi not found",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/trajectories?taxiId=999999&date={{date}}",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "trajectories"
+              ],
+              "query": [
+                {
+                  "key": "taxiId",
+                  "value": "999999"
+                },
+                {
+                  "key": "date",
+                  "value": "{{date}}"
+                }
               ]
             }
           },
