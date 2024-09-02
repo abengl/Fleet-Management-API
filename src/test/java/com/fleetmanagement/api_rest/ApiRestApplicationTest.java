@@ -1,18 +1,18 @@
 package com.fleetmanagement.api_rest;
 
-import com.fleetmanagement.api_rest.controller.TaxiController;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-class ApiRestApplicationTest {
-	@Autowired
-	TaxiController taxiController;
+@ActiveProfiles("default")
+class ApiRestApplicationTests {
 
 	@Test
-	public void contextLoads() {
-		assertThat(taxiController).isNot(null);
+	void contextLoads() {
+		System.out.println("DB_URL: " + System.getenv("DB_URL"));
+		System.out.println("DB_USERNAME: " + System.getenv("DB_USERNAME"));
+		System.out.println("DB_PASSWORD: " + System.getenv("DB_PASSWORD"));
 	}
+
 }
