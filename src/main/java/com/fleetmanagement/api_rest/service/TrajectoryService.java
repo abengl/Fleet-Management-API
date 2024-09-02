@@ -64,11 +64,6 @@ public class TrajectoryService {
 		Pageable pageable = PageRequest.of(page, limit);
 		Page<Trajectory> trajectoryPage = trajectoryRepository.findByTaxiId_IdAndDate(taxiId, date, pageable);
 
-		/*if (trajectoryPage.isEmpty()) {
-			throw new ValueNotFoundException("No trajectories found for taxi ID " + taxiId + " and date " +
-			dateString);
-		}*/
-
 		return trajectoryPage.stream().map(trajectoryMapper::toTrajectoryDTO).collect(Collectors.toList());
 	}
 
