@@ -1,12 +1,14 @@
 package com.fleetmanagement.api_rest.service;
 
+import com.fleetmanagement.api_rest.dto.LatestTrajectoryDTO;
 import com.fleetmanagement.api_rest.dto.TrajectoryDTO;
-import com.fleetmanagement.api_rest.exception.InvalidLimitException;
-import com.fleetmanagement.api_rest.exception.InvalidPageException;
+import com.fleetmanagement.api_rest.exception.InvalidFormatException;
 import com.fleetmanagement.api_rest.exception.RequiredParameterException;
 import com.fleetmanagement.api_rest.exception.ValueNotFoundException;
+import com.fleetmanagement.api_rest.mapper.LatestTrajectoryMapper;
 import com.fleetmanagement.api_rest.mapper.TrajectoryMapper;
 import com.fleetmanagement.api_rest.model.Trajectory;
+import com.fleetmanagement.api_rest.repository.TaxiRepository;
 import com.fleetmanagement.api_rest.repository.TrajectoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,48 +25,60 @@ import java.util.stream.Collectors;
 
 @Service
 public class TrajectoryService {
-
 	private final TrajectoryRepository trajectoryRepository;
+	private final TaxiRepository taxiRepository;
 	private final TrajectoryMapper trajectoryMapper;
+	private final LatestTrajectoryMapper latestTrajectoryMapper;
 
 	@Autowired
-	public TrajectoryService(TrajectoryRepository trajectoryRepository, TrajectoryMapper trajectoryMapper) {
+	public TrajectoryService(TrajectoryRepository trajectoryRepository, TaxiRepository taxiRepository,
+							 TrajectoryMapper trajectoryMapper, LatestTrajectoryMapper latestTrajectoryMapper) {
 		this.trajectoryRepository = trajectoryRepository;
+		this.taxiRepository = taxiRepository;
 		this.trajectoryMapper = trajectoryMapper;
+		this.latestTrajectoryMapper = latestTrajectoryMapper;
 	}
 
-	public List<TrajectoryDTO> getTrajectories(Integer taxiId, String dateString, int page, int limit)
-			throws ParseException {
-		if (page < 0) {
-			throw new InvalidPageException("Page number cannot be negative");
-		}
-		if (limit <= 0) {
-			throw new InvalidLimitException("Limit must be greater than zero");
-		}
-
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
-		Date date = sdf.parse(dateString);
-
-		Pageable pageable = PageRequest.of(page, limit);
-		Page<Trajectory> trajectoryPage;
+	public List<TrajectoryDTO> getTrajectories(Integer taxiId, String dateString, int page, int limit) {
 
 		if (taxiId == null) {
-			throw new RequiredParameterException("No taxi ID provided.");
+			throw new RequiredParameterException("Missing ID parameter");
 		}
 
-		if (date == null) {
-			throw new RequiredParameterException("No date is provided.");
+		if (!taxiRepository.existsById(taxiId)) {
+			throw new ValueNotFoundException("Taxi ID " + taxiId + " not found");
 		}
 
-
-		trajectoryPage = trajectoryRepository.findByTaxiId_IdAndDate(taxiId, date, pageable);
-
-		if (trajectoryPage.isEmpty()) {
-			throw new ValueNotFoundException("No taxis found with taxiId: " + taxiId);
+		if (dateString == null || dateString.isEmpty()) {
+			throw new RequiredParameterException("Missing date parameter");
 		}
 
-		return trajectoryPage.stream()
-				.map(trajectoryMapper::toTrajectoryDTO)
-				.collect(Collectors.toList());
+		Date date;
+		try {
+			SimpleDateFormat formatStringToDate = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+			date = formatStringToDate.parse(dateString);
+		} catch (ParseException e) {
+			throw new InvalidFormatException("Invalid date format: " + dateString);
+		}
+
+		Pageable pageable = PageRequest.of(page, limit);
+		Page<Trajectory> trajectoryPage = trajectoryRepository.findByTaxiId_IdAndDate(taxiId, date, pageable);
+
+		/*if (trajectoryPage.isEmpty()) {
+			throw new ValueNotFoundException("No trajectories found for taxi ID " + taxiId + " and date " +
+			dateString);
+		}*/
+
+		return trajectoryPage.stream().map(trajectoryMapper::toTrajectoryDTO).collect(Collectors.toList());
 	}
+
+	public List<LatestTrajectoryDTO> getLatestTrajectories(int page, int limit) {
+
+		Pageable pageable = PageRequest.of(page, limit);
+		Page<Trajectory> trajectoryPage = trajectoryRepository.findLatestLocations(pageable);
+
+		return trajectoryPage.stream().map(latestTrajectoryMapper::toLatestTrajectoryDTO).collect(Collectors.toList());
+	}
+
+
 }
