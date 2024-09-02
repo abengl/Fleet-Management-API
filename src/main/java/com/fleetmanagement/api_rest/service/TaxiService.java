@@ -2,7 +2,6 @@ package com.fleetmanagement.api_rest.service;
 
 import com.fleetmanagement.api_rest.dto.TaxiDTO;
 import com.fleetmanagement.api_rest.exception.InvalidLimitException;
-import com.fleetmanagement.api_rest.exception.InvalidPageException;
 import com.fleetmanagement.api_rest.exception.ValueNotFoundException;
 import com.fleetmanagement.api_rest.mapper.TaxiMapper;
 import com.fleetmanagement.api_rest.model.Taxi;
@@ -30,7 +29,7 @@ public class TaxiService {
 
 	public List<TaxiDTO> getTaxis(String plate, int page, int limit) {
 		if (page < 0) {
-			throw new InvalidPageException("Page number cannot be negative");
+			throw new InvalidLimitException("Page number cannot be negative");
 		}
 		if (limit <= 0) {
 			throw new InvalidLimitException("Limit must be greater than zero");
