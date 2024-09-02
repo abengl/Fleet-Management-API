@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-public class InvalidLimitException extends RuntimeException {
-	public InvalidLimitException(String message) {
+public class RequiredParameterException extends RuntimeException {
+	public RequiredParameterException(String message) {
 		super(message);
 	}
 }

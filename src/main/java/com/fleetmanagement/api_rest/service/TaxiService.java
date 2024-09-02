@@ -2,8 +2,7 @@ package com.fleetmanagement.api_rest.service;
 
 import com.fleetmanagement.api_rest.dto.TaxiDTO;
 import com.fleetmanagement.api_rest.exception.InvalidLimitException;
-import com.fleetmanagement.api_rest.exception.InvalidPageException;
-import com.fleetmanagement.api_rest.exception.PlateNotFoundException;
+import com.fleetmanagement.api_rest.exception.ValueNotFoundException;
 import com.fleetmanagement.api_rest.mapper.TaxiMapper;
 import com.fleetmanagement.api_rest.model.Taxi;
 import com.fleetmanagement.api_rest.repository.TaxiRepository;
@@ -20,16 +19,17 @@ import java.util.stream.Collectors;
 public class TaxiService {
 
 	private final TaxiRepository taxiRepository;
-	private final TaxiMapper taxiMapper = TaxiMapper.INSTANCE;
+	private final TaxiMapper taxiMapper;
 
 	@Autowired
-	public TaxiService(TaxiRepository taxiRepository) {
+	public TaxiService(TaxiRepository taxiRepository, TaxiMapper taxiMapper) {
 		this.taxiRepository = taxiRepository;
+		this.taxiMapper = taxiMapper;
 	}
 
 	public List<TaxiDTO> getTaxis(String plate, int page, int limit) {
 		if (page < 0) {
-			throw new InvalidPageException("Page number cannot be negative");
+			throw new InvalidLimitException("Page number cannot be negative");
 		}
 		if (limit <= 0) {
 			throw new InvalidLimitException("Limit must be greater than zero");
@@ -43,7 +43,7 @@ public class TaxiService {
 		} else {
 			taxisPage = taxiRepository.findByPlateContainingIgnoreCase(plate, pageable);
 			if (taxisPage.isEmpty()) {
-				throw new PlateNotFoundException("No taxis found with plate containing: " + plate);
+				throw new ValueNotFoundException("No taxis found with plate containing: " + plate);
 			}
 		}
 
