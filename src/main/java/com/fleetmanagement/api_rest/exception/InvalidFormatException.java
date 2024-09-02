@@ -1,7 +1,10 @@
 package com.fleetmanagement.api_rest.exception;
 
-public class InvalidFormatException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
+@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+public class InvalidFormatException extends RuntimeException {
 	public InvalidFormatException(String message) {
 		super(message);
 	}

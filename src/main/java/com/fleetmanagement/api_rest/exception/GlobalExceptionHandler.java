@@ -9,24 +9,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-	@ExceptionHandler(InvalidPageException.class)
-	@ResponseBody
-	public ResponseEntity<ErrorResponse> handleInvalidPageException(InvalidPageException ex) {
-		ErrorResponse errorResponse = new ErrorResponse("Invalid page: " + ex.getMessage());
-		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-	}
-
 	@ExceptionHandler(InvalidLimitException.class)
 	@ResponseBody
 	public ResponseEntity<ErrorResponse> handleInvalidLimitException(InvalidLimitException ex) {
-		ErrorResponse errorResponse = new ErrorResponse("Invalid limit: " + ex.getMessage());
+		ErrorResponse errorResponse =
+				new ErrorResponse("Value out of limit for the specified for the parameter: " + ex.getMessage());
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(ValueNotFoundException.class)
 	@ResponseBody
-	public ResponseEntity<ErrorResponse> handlePlateNotFoundException(ValueNotFoundException ex) {
-		ErrorResponse errorResponse = new ErrorResponse("Plate not found: " + ex.getMessage());
+	public ResponseEntity<ErrorResponse> handleValueNotFoundException(ValueNotFoundException ex) {
+		ErrorResponse errorResponse = new ErrorResponse("Value not found: " + ex.getMessage());
 		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
 	}
 
