@@ -1,7 +1,5 @@
-package com.fleetmanagement.api_rest.modelTest;
+package com.fleetmanagement.api_rest.model;
 
-import com.fleetmanagement.api_rest.model.Taxi;
-import com.fleetmanagement.api_rest.model.Trajectory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
