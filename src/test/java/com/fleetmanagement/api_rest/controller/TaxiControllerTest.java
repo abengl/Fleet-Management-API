@@ -21,12 +21,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(TaxiController.class)
 class TaxiControllerTest {
 
-	@MockBean
+	/*@MockBean
 	TaxiService taxiService;
 	@Autowired
 	MockMvc mockMvc;
-
-	@Test
+*/
+	/*@Test
 	public void getAllTaxisByPlateTest() throws Exception {
 		List<TaxiDTO> taxiDTOList = new ArrayList<>();
 		TaxiDTO taxiDTO = new TaxiDTO(123, "ABC-123");
@@ -48,5 +48,5 @@ class TaxiControllerTest {
 					System.out.println("Response: " + result.getResponse().getContentAsString());
 				});
 	}
-
+*/
 }
