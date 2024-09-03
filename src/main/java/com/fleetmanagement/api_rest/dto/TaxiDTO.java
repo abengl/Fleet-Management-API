@@ -11,4 +11,9 @@ public class TaxiDTO { // It has only the fields needed for the API response for
 
 	public TaxiDTO() {
 	}
+
+	public TaxiDTO(Integer id, String plate) {
+		this.id = id;
+		this.plate = plate;
+	}
 }

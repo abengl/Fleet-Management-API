@@ -25,4 +25,10 @@ public class Taxi {
 
 	public Taxi() {
 	}
+
+	public Taxi(Integer id, String plate, List<Trajectory> trajectories) {
+		this.id = id;
+		this.plate = plate;
+		this.trajectories = trajectories;
+	}
 }

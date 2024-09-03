@@ -6,6 +6,8 @@ import com.fleetmanagement.api_rest.exception.ValueNotFoundException;
 import com.fleetmanagement.api_rest.mapper.TaxiMapper;
 import com.fleetmanagement.api_rest.model.Taxi;
 import com.fleetmanagement.api_rest.repository.TaxiRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +19,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class TaxiService {
+
+	private static final Logger logger = LoggerFactory.getLogger(TaxiService.class);
 
 	private final TaxiRepository taxiRepository;
 	private final TaxiMapper taxiMapper;
@@ -47,8 +51,11 @@ public class TaxiService {
 			}
 		}
 
-		return taxisPage.stream()
+		List<TaxiDTO> taxiDTOList = taxisPage.stream()
 				.map(taxiMapper::toTaxiDTO)
 				.collect(Collectors.toList());
+
+		logger.debug("Returning {} taxis", taxiDTOList.size());
+		return taxiDTOList;
 	}
 }

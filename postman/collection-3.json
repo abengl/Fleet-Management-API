@@ -401,6 +401,20 @@
         },
         {
           "name": "trajectories - taxi not found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"/trajectories/{{taxiId}}?date={{date}} responds with 404 if taxi id not found\", () => {",
+                  "    pm.expect(pm.response.code).to.eq(404);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
