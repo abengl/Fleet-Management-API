@@ -92,7 +92,7 @@ public class TaxiServiceTest {
 	@Test
 	@DisplayName("TaxiService - Testing method getTaxis() - It should return an exception when there is no match the " + "plate " + "parameter")
 	public void TaxiService_getTaxis_ReturnExceptionNotFound() {
-		String plate = "00000000000";
+		String plate = "0000000";
 		int page = 0;
 		int limit = 10;
 		Pageable pageable = PageRequest.of(page, limit);
