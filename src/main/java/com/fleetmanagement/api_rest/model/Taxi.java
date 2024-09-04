@@ -2,15 +2,17 @@ package com.fleetmanagement.api_rest.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
 
 @Entity
-@Table(name = "taxis")
 @Getter
 @Setter
+@Builder
+@Table(name = "taxis")
 public class Taxi {
 
 	@Id
@@ -32,3 +34,4 @@ public class Taxi {
 		this.trajectories = trajectories;
 	}
 }
+

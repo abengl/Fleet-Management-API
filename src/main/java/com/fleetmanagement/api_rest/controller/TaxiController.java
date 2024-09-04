@@ -32,7 +32,7 @@ public class TaxiController {
 			@RequestParam(name = "page", defaultValue = "0") int page,
 			@RequestParam(name = "limit", defaultValue = "10") int limit) {
 
-		logger.debug("Recieved request with plate={}, page={}, limit={}", plate, page, limit);
+		logger.debug("Received request with plate={}, page={}, limit={}", plate, page, limit);
 		List<TaxiDTO> taxis = taxiService.getTaxis(plate, page, limit);
 		return ResponseEntity.ok(taxis);
 	}
