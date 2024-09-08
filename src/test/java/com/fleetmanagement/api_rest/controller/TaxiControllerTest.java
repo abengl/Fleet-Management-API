@@ -25,8 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class TaxiControllerTest {
-	@MockBean
-	private TaxiService taxiService;
+	@MockBean //Mock de una capa, no necesita de un db en sí, métodos por defecto del repositorio
+	private TaxiService taxiService; //@Mock para clases regulares que no tienen anotaciones, se debe instanciar
 
 	@Autowired
 	private MockMvc mockMvc;
