@@ -32,5 +32,13 @@ public class Trajectory {
 
 	public Trajectory() {
 	}
+
+	public Trajectory(Integer id, Taxi taxiId, Date date, double latitude, double longitude) {
+		this.id = id;
+		this.taxiId = taxiId;
+		this.date = date;
+		this.latitude = latitude;
+		this.longitude = longitude;
+	}
 }
 
