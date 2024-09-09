@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -28,9 +30,9 @@ public class TaxiRepositoryTest {
 	@BeforeEach
 	public void setUp() {
 		// Arrange
-		taxiRepository.save(new Taxi(1,"ABC-123", null));
-		taxiRepository.save(new Taxi(2,"abc-456", null));
-		taxiRepository.save(new Taxi(3,"PQR-000", null));
+		taxiRepository.save(new Taxi(1,"ABC-123", new ArrayList<>()));
+		taxiRepository.save(new Taxi(2,"abc-456", new ArrayList<>()));
+		taxiRepository.save(new Taxi(3,"PQR-000", new ArrayList<>()));
 	}
 
 	@Test

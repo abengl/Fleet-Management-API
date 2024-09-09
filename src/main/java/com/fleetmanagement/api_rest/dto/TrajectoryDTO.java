@@ -15,4 +15,13 @@ public class TrajectoryDTO {
 
 	public TrajectoryDTO() {
 	}
+
+	public TrajectoryDTO(Integer id, String plate, Integer taxiId, String date, double latitude, double longitude) {
+		this.id = id;
+		this.plate = plate;
+		this.taxiId = taxiId;
+		this.date = date;
+		this.latitude = latitude;
+		this.longitude = longitude;
+	}
 }
