@@ -74,6 +74,4 @@ public class TrajectoryService {
 
 		return trajectoryPage.stream().map(latestTrajectoryMapper::toLatestTrajectoryDTO).collect(Collectors.toList());
 	}
-
-
 }
