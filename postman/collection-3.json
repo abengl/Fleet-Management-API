@@ -613,7 +613,7 @@
               "script": {
                 "exec": [
                   "pm.test(\"/users POST endpoint exists and responds with status CREATED 201 and id, name, email if successful\", () => {",
-                  "    pm.expect(pm.response.status).to.eq('CREATED');",
+                  "    pm.expect(pm.response.status).to.eq('Created');",
                   "    pm.expect(pm.response.code).to.eq(201);",
                   "    const user = pm.response.json();",
                   "    pm.expect(user).to.haveOwnProperty('id');",

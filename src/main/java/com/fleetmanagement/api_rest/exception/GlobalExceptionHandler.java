@@ -37,6 +37,12 @@ public class GlobalExceptionHandler {
 		ErrorResponse errorResponse = new ErrorResponse("Invalid format for date value: " + ex.getMessage());
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
+	@ExceptionHandler(UserAlreadyExistsException.class)
+	@ResponseBody
+	public ResponseEntity<ErrorResponse> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
+		ErrorResponse errorResponse = new ErrorResponse("User already exists with email: " + ex.getMessage());
+		return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+	}
 
 	@ExceptionHandler(Exception.class)
 	@ResponseBody
