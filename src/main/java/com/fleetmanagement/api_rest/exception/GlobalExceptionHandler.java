@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.security.InvalidParameterException;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -48,6 +50,11 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(TypeMismatchException.class)
 	public ResponseEntity<ErrorResponse> handleTypeMismatchException(TypeMismatchException ex) {
 		ErrorResponse errorResponse = new ErrorResponse("Invalid parameter. Page and limit must be valid integers");
+		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+	}
+	@ExceptionHandler(InvalidParameterException.class)
+	public ResponseEntity<ErrorResponse> handleInvalidParameterException(InvalidParameterException ex) {
+		ErrorResponse errorResponse = new ErrorResponse("Invalid parameter." + ex.getMessage());
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
 

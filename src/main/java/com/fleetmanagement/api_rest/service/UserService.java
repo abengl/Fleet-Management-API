@@ -2,10 +2,7 @@ package com.fleetmanagement.api_rest.service;
 
 import com.fleetmanagement.api_rest.dto.UserCreateDTO;
 import com.fleetmanagement.api_rest.dto.UserResponseDTO;
-import com.fleetmanagement.api_rest.exception.InvalidLimitException;
-import com.fleetmanagement.api_rest.exception.RequiredParameterException;
-import com.fleetmanagement.api_rest.exception.UserAlreadyExistsException;
-import com.fleetmanagement.api_rest.exception.ValueNotFoundException;
+import com.fleetmanagement.api_rest.exception.*;
 import com.fleetmanagement.api_rest.mapper.UserMapper;
 import com.fleetmanagement.api_rest.model.User;
 import com.fleetmanagement.api_rest.repository.UserRepository;
@@ -15,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,6 +73,28 @@ public class UserService {
 		userRepository.delete(user);
 
 		// Map back to ResponseDTO and return the saved user
+		return userMapper.toUserResponseDTO(user);
+	}
+
+	public UserResponseDTO updateUserByName(UserCreateDTO userCreateDTO, Integer id) {
+
+		if(userCreateDTO.getPassword() != null) {
+			throw new InvalidParameterException("Password field can't be modified.");
+		}
+
+		if(userCreateDTO.getEmail() != null) {
+			throw new InvalidParameterException("Email field can't be modified.");
+		}
+
+		if (userCreateDTO.getName() == null) {
+			throw new InvalidParameterException("Request body is empty.");
+		}
+
+		User user = userRepository.findById(id)
+				.orElseThrow(() -> new ValueNotFoundException("User with id " + id + " doesn't exist."));
+
+		user.setName(userCreateDTO.getName());
+
 		return userMapper.toUserResponseDTO(user);
 	}
 }
