@@ -1,15 +1,12 @@
 package com.fleetmanagement.api_rest.business.service;
 
-import com.fleetmanagement.api_rest.business.exception.InvalidLimitException;
-import com.fleetmanagement.api_rest.business.exception.RequiredParameterException;
 import com.fleetmanagement.api_rest.business.exception.UserAlreadyExistsException;
 import com.fleetmanagement.api_rest.business.exception.ValueNotFoundException;
-import com.fleetmanagement.api_rest.presentation.dto.UserCreateDTO;
-import com.fleetmanagement.api_rest.presentation.dto.UserResponseDTO;
-import com.fleetmanagement.api_rest.business.exception.*;
-import com.fleetmanagement.api_rest.presentation.mapper.UserMapper;
 import com.fleetmanagement.api_rest.persistence.entity.User;
 import com.fleetmanagement.api_rest.persistence.repository.UserRepository;
+import com.fleetmanagement.api_rest.presentation.dto.UserCreateDTO;
+import com.fleetmanagement.api_rest.presentation.dto.UserResponseDTO;
+import com.fleetmanagement.api_rest.presentation.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,10 +32,10 @@ public class UserService {
 	public List<UserResponseDTO> getAllUsers(int page, int limit) {
 
 		if (page < 0) {
-			throw new InvalidLimitException("Page number cannot be negative");
+			throw new InvalidParameterException("Page number cannot be negative");
 		}
 		if (limit <= 0) {
-			throw new InvalidLimitException("Limit must be greater than zero");
+			throw new InvalidParameterException("Limit must be greater than zero");
 		}
 
 		Pageable pageable = PageRequest.of(page, limit);
@@ -50,11 +47,11 @@ public class UserService {
 	public UserResponseDTO createUser(UserCreateDTO userCreateDTO) {
 
 		if(userCreateDTO.getPassword() == null || userCreateDTO.getPassword().isEmpty()) {
-			throw new RequiredParameterException("Password value is missing.");
+			throw new InvalidParameterException("Password value is missing.");
 		}
 
 		if(userCreateDTO.getEmail() == null || userCreateDTO.getEmail().isEmpty()) {
-			throw new RequiredParameterException("Email value is missing.");
+			throw new InvalidParameterException("Email value is missing.");
 		}
 
 		if(userRepository.existsUserByEmail(userCreateDTO.getEmail())) {

@@ -12,14 +12,6 @@ import java.security.InvalidParameterException;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-	@ExceptionHandler(InvalidLimitException.class)
-	@ResponseBody
-	public ResponseEntity<ErrorResponse> handleInvalidLimitException(InvalidLimitException ex) {
-		ErrorResponse errorResponse =
-				new ErrorResponse("Value out of limit for the specified for the parameter. " + ex.getMessage());
-		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-	}
-
 	@ExceptionHandler(ValueNotFoundException.class)
 	@ResponseBody
 	public ResponseEntity<ErrorResponse> handleValueNotFoundException(ValueNotFoundException ex) {
@@ -27,17 +19,10 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
 	}
 
-	@ExceptionHandler(RequiredParameterException.class)
-	@ResponseBody
-	public ResponseEntity<ErrorResponse> handleRequiredParameterException(RequiredParameterException ex) {
-		ErrorResponse errorResponse = new ErrorResponse("Required parameter missing. " + ex.getMessage());
-		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-	}
-
 	@ExceptionHandler(InvalidFormatException.class)
 	@ResponseBody
 	public ResponseEntity<ErrorResponse> handleInvalidFormatException(InvalidFormatException ex) {
-		ErrorResponse errorResponse = new ErrorResponse("Invalid format for date value. " + ex.getMessage());
+		ErrorResponse errorResponse = new ErrorResponse("Invalid format. " + ex.getMessage());
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
 	@ExceptionHandler(UserAlreadyExistsException.class)

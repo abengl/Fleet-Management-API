@@ -11,4 +11,5 @@ public interface LatestTrajectoryMapper {
 	@Mapping(source = "taxiId.plate", target = "plate")
 	@Mapping(source = "date", target = "date", dateFormat = "yyyy-MM-dd HH:mm:ss")
 	LatestTrajectoryDTO toLatestTrajectoryDTO(Trajectory trajectory);
+
 }

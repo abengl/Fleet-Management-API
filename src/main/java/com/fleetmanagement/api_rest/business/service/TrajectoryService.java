@@ -1,21 +1,21 @@
 package com.fleetmanagement.api_rest.business.service;
 
 import com.fleetmanagement.api_rest.business.exception.InvalidFormatException;
-import com.fleetmanagement.api_rest.business.exception.RequiredParameterException;
 import com.fleetmanagement.api_rest.business.exception.ValueNotFoundException;
+import com.fleetmanagement.api_rest.persistence.entity.Trajectory;
+import com.fleetmanagement.api_rest.persistence.repository.TaxiRepository;
+import com.fleetmanagement.api_rest.persistence.repository.TrajectoryRepository;
 import com.fleetmanagement.api_rest.presentation.dto.LatestTrajectoryDTO;
 import com.fleetmanagement.api_rest.presentation.dto.TrajectoryDTO;
 import com.fleetmanagement.api_rest.presentation.mapper.LatestTrajectoryMapper;
 import com.fleetmanagement.api_rest.presentation.mapper.TrajectoryMapper;
-import com.fleetmanagement.api_rest.persistence.entity.Trajectory;
-import com.fleetmanagement.api_rest.persistence.repository.TaxiRepository;
-import com.fleetmanagement.api_rest.persistence.repository.TrajectoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.security.InvalidParameterException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -42,15 +42,15 @@ public class TrajectoryService {
 	public List<TrajectoryDTO> getTrajectories(Integer taxiId, String dateString, int page, int limit) {
 
 		if (taxiId == null) {
-			throw new RequiredParameterException("Missing ID parameter");
+			throw new InvalidParameterException("Missing taxiId value.");
 		}
 
 		if (!taxiRepository.existsById(taxiId)) {
-			throw new ValueNotFoundException("Taxi ID " + taxiId + " not found");
+			throw new ValueNotFoundException("Taxi ID " + taxiId + " not found.");
 		}
 
 		if (dateString == null || dateString.isEmpty()) {
-			throw new RequiredParameterException("Missing date parameter");
+			throw new InvalidParameterException("Missing date value.");
 		}
 
 		Date date;
@@ -58,7 +58,7 @@ public class TrajectoryService {
 			SimpleDateFormat formatStringToDate = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
 			date = formatStringToDate.parse(dateString);
 		} catch (ParseException e) {
-			throw new InvalidFormatException("Invalid date format: " + dateString);
+			throw new InvalidFormatException("Incorrect date value: " + dateString);
 		}
 
 		Pageable pageable = PageRequest.of(page, limit);

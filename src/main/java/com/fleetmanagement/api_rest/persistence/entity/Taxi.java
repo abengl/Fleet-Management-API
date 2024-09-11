@@ -2,17 +2,15 @@ package com.fleetmanagement.api_rest.persistence.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
-@Builder
 @Table(name = "taxis")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Taxi {
 
 	@Id
@@ -25,13 +23,5 @@ public class Taxi {
 	@JsonManagedReference
 	private List<Trajectory> trajectories;
 
-	public Taxi() {
-	}
-
-	public Taxi(Integer id, String plate, List<Trajectory> trajectories) {
-		this.id = id;
-		this.plate = plate;
-		this.trajectories = trajectories;
-	}
 }
 

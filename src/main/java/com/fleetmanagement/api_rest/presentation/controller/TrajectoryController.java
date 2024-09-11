@@ -1,8 +1,8 @@
 package com.fleetmanagement.api_rest.presentation.controller;
 
+import com.fleetmanagement.api_rest.business.service.TrajectoryService;
 import com.fleetmanagement.api_rest.presentation.dto.LatestTrajectoryDTO;
 import com.fleetmanagement.api_rest.presentation.dto.TrajectoryDTO;
-import com.fleetmanagement.api_rest.business.service.TrajectoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,15 +30,18 @@ public class TrajectoryController {
 			@RequestParam(name = "page", defaultValue = "0") int page,
 			@RequestParam(name = "limit", defaultValue = "20") int limit) {
 
-			List<TrajectoryDTO> trajectories = trajectoryService.getTrajectories(taxiId, date, page, limit);
-			return ResponseEntity.ok(trajectories);
+		List<TrajectoryDTO> trajectories = trajectoryService.getTrajectories(taxiId, date, page, limit);
+		return ResponseEntity.ok(trajectories);
+
 	}
 
 	@GetMapping("/latest")
 	public ResponseEntity<List<LatestTrajectoryDTO>> getLatestTrajectories(
 			@RequestParam(name = "page", defaultValue = "0") int page,
 			@RequestParam(name = "limit", defaultValue = "20") int limit) {
+
 		List<LatestTrajectoryDTO> latestTrajectories = trajectoryService.getLatestTrajectories(page, limit);
 		return ResponseEntity.ok(latestTrajectories);
+
 	}
 }
