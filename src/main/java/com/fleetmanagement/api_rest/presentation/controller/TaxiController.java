@@ -1,9 +1,7 @@
 package com.fleetmanagement.api_rest.presentation.controller;
 
-import com.fleetmanagement.api_rest.presentation.dto.TaxiDTO;
 import com.fleetmanagement.api_rest.business.service.TaxiService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.fleetmanagement.api_rest.presentation.dto.TaxiDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,8 +14,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/taxis")
 public class TaxiController {
-
-	private static final Logger logger = LoggerFactory.getLogger(TaxiController.class);
 
 	private final TaxiService taxiService;
 
@@ -32,7 +28,6 @@ public class TaxiController {
 			@RequestParam(name = "page", defaultValue = "0") int page,
 			@RequestParam(name = "limit", defaultValue = "10") int limit) {
 
-		logger.debug("Received request with plate={}, page={}, limit={}", plate, page, limit);
 		List<TaxiDTO> taxis = taxiService.getTaxis(plate, page, limit);
 		return ResponseEntity.ok(taxis);
 	}

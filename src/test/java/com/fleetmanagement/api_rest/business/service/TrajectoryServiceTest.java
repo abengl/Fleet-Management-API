@@ -3,7 +3,6 @@ package com.fleetmanagement.api_rest.business.service;
 import com.fleetmanagement.api_rest.presentation.dto.LatestTrajectoryDTO;
 import com.fleetmanagement.api_rest.presentation.dto.TrajectoryDTO;
 import com.fleetmanagement.api_rest.business.exception.InvalidFormatException;
-import com.fleetmanagement.api_rest.business.exception.RequiredParameterException;
 import com.fleetmanagement.api_rest.business.exception.ValueNotFoundException;
 import com.fleetmanagement.api_rest.presentation.mapper.LatestTrajectoryMapper;
 import com.fleetmanagement.api_rest.presentation.mapper.TrajectoryMapper;
@@ -24,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.security.InvalidParameterException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -63,9 +63,9 @@ class TrajectoryServiceTest {
 		int limit = 10;
 
 		// Act & Assert
-		RequiredParameterException exception = assertThrows(RequiredParameterException.class,
+		InvalidParameterException exception = assertThrows(InvalidParameterException.class,
 				() -> trajectoryService.getTrajectories(taxiId, stringDate, page, limit));
-		assertEquals("Missing ID parameter", exception.getMessage());
+		assertEquals("Missing taxiId value.", exception.getMessage());
 	}
 
 	@Test
@@ -82,7 +82,7 @@ class TrajectoryServiceTest {
 		// Act & Assert
 		ValueNotFoundException exception = assertThrows(ValueNotFoundException.class,
 				() -> trajectoryService.getTrajectories(taxiId, stringDate, page, limit));
-		assertEquals("Taxi ID " + taxiId + " not found", exception.getMessage());
+		assertEquals("Taxi ID " + taxiId + " not found.", exception.getMessage());
 	}
 
 	@Test
@@ -97,9 +97,9 @@ class TrajectoryServiceTest {
 		when(taxiRepository.existsById(taxiId)).thenReturn(true);
 
 		// Act & Assert
-		RequiredParameterException exception = assertThrows(RequiredParameterException.class,
+		InvalidParameterException exception = assertThrows(InvalidParameterException.class,
 				() -> trajectoryService.getTrajectories(taxiId, stringDate, page, limit));
-		assertEquals("Missing date parameter", exception.getMessage());
+		assertEquals("Missing date value.", exception.getMessage());
 	}
 
 	@Test
@@ -116,7 +116,7 @@ class TrajectoryServiceTest {
 		// Act & Assert
 		InvalidFormatException exception = assertThrows(InvalidFormatException.class,
 				() -> trajectoryService.getTrajectories(taxiId, stringDate, page, limit));
-		assertEquals("Invalid date format: " + stringDate, exception.getMessage());
+		assertEquals("Incorrect date value: " + stringDate, exception.getMessage());
 	}
 
 	@Test

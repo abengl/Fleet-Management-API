@@ -1,11 +1,16 @@
 package com.fleetmanagement.api_rest.presentation.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class TrajectoryDTO {
+
 	private Integer id;
 	private String plate;
 	private Integer taxiId;
@@ -13,15 +18,4 @@ public class TrajectoryDTO {
 	private double latitude;
 	private double longitude;
 
-	public TrajectoryDTO() {
-	}
-
-	public TrajectoryDTO(Integer id, String plate, Integer taxiId, String date, double latitude, double longitude) {
-		this.id = id;
-		this.plate = plate;
-		this.taxiId = taxiId;
-		this.date = date;
-		this.latitude = latitude;
-		this.longitude = longitude;
-	}
 }

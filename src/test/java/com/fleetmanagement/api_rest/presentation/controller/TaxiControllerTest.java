@@ -1,6 +1,5 @@
 package com.fleetmanagement.api_rest.presentation.controller;
 
-import com.fleetmanagement.api_rest.presentation.controller.TaxiController;
 import com.fleetmanagement.api_rest.presentation.dto.TaxiDTO;
 import com.fleetmanagement.api_rest.business.exception.ValueNotFoundException;
 import com.fleetmanagement.api_rest.business.service.TaxiService;
@@ -88,7 +87,7 @@ class TaxiControllerTest {
 						.param("limit", String.valueOf(limit)).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.error").value("Value not found: No taxis found with plate containing: " + plate));
+				.andExpect(jsonPath("$.error").value("Value not found. No taxis found with plate containing: " + plate));
 
 
 		verify(taxiService).getTaxis(plate, page, limit);

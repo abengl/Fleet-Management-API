@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TaxiRepository extends JpaRepository<Taxi, Integer> {
-	Page<Taxi> findAll(Pageable pageable);
+
 	Page<Taxi> findByPlateContainingIgnoreCase(String plate, Pageable pageable);
-	boolean existsById(Integer id);
+
 }

@@ -12,10 +12,9 @@ import java.util.Date;
 
 @Repository
 public interface TrajectoryRepository extends JpaRepository<Trajectory, Integer> {
+
 	@Query("SELECT t FROM Trajectory t WHERE t.taxiId.id = :taxiId AND FUNCTION('DATE', t.date) = :date")
 	Page<Trajectory> findByTaxiId_IdAndDate(Integer taxiId, @Param("date") Date date, Pageable pageable);
-
-	Page<Trajectory> findAll(Pageable pageable);
 
 	@Query("SELECT t FROM Trajectory t WHERE t.date = (SELECT MAX(t2.date) FROM Trajectory t2 WHERE t2.taxiId.id = t" +
 			".taxiId.id)")

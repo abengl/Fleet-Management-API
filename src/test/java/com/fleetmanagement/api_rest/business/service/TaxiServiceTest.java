@@ -1,11 +1,10 @@
 package com.fleetmanagement.api_rest.business.service;
 
-import com.fleetmanagement.api_rest.presentation.dto.TaxiDTO;
-import com.fleetmanagement.api_rest.business.exception.InvalidLimitException;
 import com.fleetmanagement.api_rest.business.exception.ValueNotFoundException;
-import com.fleetmanagement.api_rest.presentation.mapper.TaxiMapper;
 import com.fleetmanagement.api_rest.persistence.entity.Taxi;
 import com.fleetmanagement.api_rest.persistence.repository.TaxiRepository;
+import com.fleetmanagement.api_rest.presentation.dto.TaxiDTO;
+import com.fleetmanagement.api_rest.presentation.mapper.TaxiMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.security.InvalidParameterException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -115,7 +115,7 @@ public class TaxiServiceTest {
 		int limit = 10;
 
 		//Act-Assert
-		InvalidLimitException exception = assertThrows(InvalidLimitException.class,
+		InvalidParameterException exception = assertThrows(InvalidParameterException.class,
 				() -> taxiService.getTaxis(null, invalidPage, limit));
 		assertEquals("Page number cannot be negative", exception.getMessage());
 	}

@@ -2,8 +2,6 @@ package com.fleetmanagement.api_rest.persistence.repository;
 
 import com.fleetmanagement.api_rest.persistence.entity.Taxi;
 import com.fleetmanagement.api_rest.persistence.entity.Trajectory;
-import com.fleetmanagement.api_rest.persistence.repository.TaxiRepository;
-import com.fleetmanagement.api_rest.persistence.repository.TrajectoryRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,31 +34,6 @@ class TrajectoryRepositoryTest {
 
 	@Autowired
 	TaxiRepository taxiRepository;
-
-	/*@BeforeAll
-	void setUp() throws ParseException {
-		// Arrange
-		Taxi taxi1 = new Taxi(1, "ABC-123", null);
-		Taxi taxi2 = new Taxi(2, "abc-456", null);
-
-		taxiRepository.save(taxi1);
-		taxiRepository.save(taxi2);
-
-		Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse("2024-01-01");
-		Date date2 = new SimpleDateFormat("yyyy-MM-dd").parse("2024-02-02");
-		Date date3 = new SimpleDateFormat("yyyy-MM-dd").parse("2024-01-31");
-		Date date4 = new SimpleDateFormat("yyyy-MM-dd").parse("2024-02-28");
-
-		Trajectory trajectory1 = new Trajectory(10, taxi1, date1, 100.00, -100.00);
-		Trajectory trajectory2 = new Trajectory(20, taxi2, date2, 200.00, -200.00);
-		Trajectory trajectory3 = new Trajectory(30, taxi1, date3, 100.00, -100.00);
-		Trajectory trajectory4 = new Trajectory(40, taxi2, date4, 200.00, -200.00);
-
-		trajectoryRepository.save(trajectory1);
-		trajectoryRepository.save(trajectory2);
-		trajectoryRepository.save(trajectory3);
-		trajectoryRepository.save(trajectory4);
-	}*/
 
 	@BeforeAll
 	void setUp() throws ParseException {
