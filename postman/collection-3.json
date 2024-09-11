@@ -716,7 +716,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"grace.hopper@systers.xyz\"\n}",
+              "raw": "{\n  \"password\": \"grace.hoppersysters.xyz\"\n}",
               "options": {
                 "raw": {
                   "language": "json"

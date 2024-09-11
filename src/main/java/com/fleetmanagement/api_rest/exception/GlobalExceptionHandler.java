@@ -1,5 +1,6 @@
 package com.fleetmanagement.api_rest.exception;
 
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -42,6 +43,12 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ErrorResponse> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
 		ErrorResponse errorResponse = new ErrorResponse("User already exists with email: " + ex.getMessage());
 		return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+	}
+
+	@ExceptionHandler(TypeMismatchException.class)
+	public ResponseEntity<ErrorResponse> handleTypeMismatchException(TypeMismatchException ex) {
+		ErrorResponse errorResponse = new ErrorResponse("Invalid parameter. Page and limit must be valid integers");
+		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(Exception.class)

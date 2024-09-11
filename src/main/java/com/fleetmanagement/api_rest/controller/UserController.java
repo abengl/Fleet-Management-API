@@ -1,5 +1,6 @@
 package com.fleetmanagement.api_rest.controller;
 
+import com.fleetmanagement.api_rest.dto.TaxiDTO;
 import com.fleetmanagement.api_rest.dto.UserCreateDTO;
 import com.fleetmanagement.api_rest.dto.UserResponseDTO;
 import com.fleetmanagement.api_rest.service.UserService;
@@ -7,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -19,8 +22,11 @@ public class UserController {
 	}
 
 	@GetMapping
-	public String test() {
-		return "Hello World!";
+	public ResponseEntity<List<UserResponseDTO>> getUsers(
+			@RequestParam(name = "page", defaultValue = "0") int page,
+			@RequestParam(name = "limit", defaultValue = "10") int limit) {
+		List<UserResponseDTO> users = userService.getAllUsers(page, limit);
+		return ResponseEntity.ok(users);
 	}
 
 	@PostMapping
