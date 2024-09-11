@@ -1,13 +1,12 @@
 package com.fleetmanagement.api_rest.service;
 
-import com.fleetmanagement.api_rest.dto.TaxiDTO;
 import com.fleetmanagement.api_rest.dto.UserCreateDTO;
 import com.fleetmanagement.api_rest.dto.UserResponseDTO;
 import com.fleetmanagement.api_rest.exception.InvalidLimitException;
 import com.fleetmanagement.api_rest.exception.RequiredParameterException;
 import com.fleetmanagement.api_rest.exception.UserAlreadyExistsException;
+import com.fleetmanagement.api_rest.exception.ValueNotFoundException;
 import com.fleetmanagement.api_rest.mapper.UserMapper;
-import com.fleetmanagement.api_rest.model.Taxi;
 import com.fleetmanagement.api_rest.model.User;
 import com.fleetmanagement.api_rest.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,29 +30,6 @@ public class UserService {
 		this.userMapper = userMapper;
 	}
 
-	public UserResponseDTO createUser(UserCreateDTO userCreateDTO) {
-
-		if(userCreateDTO.getPassword() == null || userCreateDTO.getPassword().isEmpty()) {
-			throw new RequiredParameterException("Password value is missing.");
-		}
-
-		if(userCreateDTO.getEmail() == null || userCreateDTO.getEmail().isEmpty()) {
-			throw new RequiredParameterException("Email value is missing.");
-		}
-
-		if(userRepository.existsByEmail(userCreateDTO.getEmail())) {
-			throw new UserAlreadyExistsException(userCreateDTO.getEmail());
-		}
-
-		// Map DTO to entity
-		User user = userMapper.toUser(userCreateDTO);
-		User savedUser = userRepository.save(user);
-
-		// Map back to ResponseDTO and return the saved user
-		return userMapper.toUserResponseDTO(savedUser);
-
-	}
-
 	public List<UserResponseDTO> getAllUsers(int page, int limit) {
 
 		if (page < 0) {
@@ -67,5 +43,38 @@ public class UserService {
 		Page<User> usersPage = userRepository.findAll(pageable);
 
 		return usersPage.stream().map(userMapper::toUserResponseDTO).collect(Collectors.toList());
+	}
+
+	public UserResponseDTO createUser(UserCreateDTO userCreateDTO) {
+
+		if(userCreateDTO.getPassword() == null || userCreateDTO.getPassword().isEmpty()) {
+			throw new RequiredParameterException("Password value is missing.");
+		}
+
+		if(userCreateDTO.getEmail() == null || userCreateDTO.getEmail().isEmpty()) {
+			throw new RequiredParameterException("Email value is missing.");
+		}
+
+		if(userRepository.existsUserByEmail(userCreateDTO.getEmail())) {
+			throw new UserAlreadyExistsException(userCreateDTO.getEmail());
+		}
+
+		// Map DTO to entity
+		User user = userMapper.toUser(userCreateDTO);
+		User savedUser = userRepository.save(user);
+
+		// Map back to ResponseDTO and return the saved user
+		return userMapper.toUserResponseDTO(savedUser);
+
+	}
+
+	public UserResponseDTO deleteUser(Integer id) {
+		User user = userRepository.findById(id)
+				.orElseThrow(() -> new ValueNotFoundException("User with id " + id + " doesn't exist."));
+
+		userRepository.delete(user);
+
+		// Map back to ResponseDTO and return the saved user
+		return userMapper.toUserResponseDTO(user);
 	}
 }

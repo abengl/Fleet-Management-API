@@ -37,10 +37,11 @@ CREATE TABLE IF NOT EXISTS verceldb.public.users
     CONSTRAINT users_pkey PRIMARY KEY (id)
 );
 
+/*
 -- Delete test user
 DELETE FROM verceldb.public.users
 WHERE email = 'newUser@test.com';
-
+*/
 -- users table test values
 INSERT INTO verceldb.public.users(name, email, password)
 VALUES ('User 1', 'user1@example.com', 'password123'),

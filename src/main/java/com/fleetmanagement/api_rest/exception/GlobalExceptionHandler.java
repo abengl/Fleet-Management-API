@@ -14,28 +14,28 @@ public class GlobalExceptionHandler {
 	@ResponseBody
 	public ResponseEntity<ErrorResponse> handleInvalidLimitException(InvalidLimitException ex) {
 		ErrorResponse errorResponse =
-				new ErrorResponse("Value out of limit for the specified for the parameter: " + ex.getMessage());
+				new ErrorResponse("Value out of limit for the specified for the parameter. " + ex.getMessage());
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(ValueNotFoundException.class)
 	@ResponseBody
 	public ResponseEntity<ErrorResponse> handleValueNotFoundException(ValueNotFoundException ex) {
-		ErrorResponse errorResponse = new ErrorResponse("Value not found: " + ex.getMessage());
+		ErrorResponse errorResponse = new ErrorResponse("Value not found. " + ex.getMessage());
 		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(RequiredParameterException.class)
 	@ResponseBody
 	public ResponseEntity<ErrorResponse> handleRequiredParameterException(RequiredParameterException ex) {
-		ErrorResponse errorResponse = new ErrorResponse("Required parameter missing: " + ex.getMessage());
+		ErrorResponse errorResponse = new ErrorResponse("Required parameter missing. " + ex.getMessage());
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(InvalidFormatException.class)
 	@ResponseBody
 	public ResponseEntity<ErrorResponse> handleInvalidFormatException(InvalidFormatException ex) {
-		ErrorResponse errorResponse = new ErrorResponse("Invalid format for date value: " + ex.getMessage());
+		ErrorResponse errorResponse = new ErrorResponse("Invalid format for date value. " + ex.getMessage());
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
 	@ExceptionHandler(UserAlreadyExistsException.class)
@@ -54,7 +54,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(Exception.class)
 	@ResponseBody
 	public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
-		ErrorResponse errorResponse = new ErrorResponse("An error occurred: " + ex.getMessage());
+		ErrorResponse errorResponse = new ErrorResponse("An error occurred. " + ex.getMessage());
 		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }
