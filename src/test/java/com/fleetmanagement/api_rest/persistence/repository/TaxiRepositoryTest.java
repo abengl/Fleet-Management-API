@@ -1,7 +1,6 @@
 package com.fleetmanagement.api_rest.persistence.repository;
 
 import com.fleetmanagement.api_rest.persistence.entity.Taxi;
-import com.fleetmanagement.api_rest.persistence.repository.TaxiRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
