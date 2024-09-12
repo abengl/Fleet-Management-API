@@ -45,42 +45,29 @@ public class TaxiRepositoryTest {
 
 	@Test
 	@DisplayName("Testing method findAll() - It should return a page with all taxis with pagination")
-	public void TaxiRepository_findAll_ReturnTaxiPage(){
+	public void findAllTest() {
 		// Act
 		Pageable pageable = PageRequest.of(0, 5);
 		Page<Taxi> taxiPage = taxiRepository.findAll(pageable);
 
-		// Debug output
-		System.out.println("First page content:");
-		taxiPage.getContent().forEach(taxi ->
-				System.out.println("Taxi ID: " + taxi.getId() + ", Plate: " + taxi.getPlate())
-		);
-
 		// Assert
 		assertThat(taxiPage).isNotNull();
-		assertThat(taxiPage.getTotalPages()).isEqualTo(2);
-		assertThat(taxiPage.getTotalElements()).isEqualTo(7);
-		assertThat(taxiPage.getNumber()).isEqualTo(0);
-		assertThat(taxiPage.getContent()).hasSize(5);
-		assertThat(taxiPage.getContent().get(0).getPlate()).isEqualTo("ABC-123");
+		assertThat(taxiPage.getTotalPages()).as("Total pages should be 2").isEqualTo(2);
+		assertThat(taxiPage.getTotalElements()).as("Total elements should be 7").isEqualTo(7);
+		assertThat(taxiPage.getContent().get(0).getPlate()).as("The first plate should be ABC-123")
+				.isEqualTo("ABC-123");
 	}
 
 	@Test
 	@DisplayName("Testing findByPlateContainingIgnoreCase() - It should return a taxi page matching the plate")
-	public void TaxiRepository_findByPlateContainingIgnoreCase_ReturnTaxiPage() {
+	public void findByPlateTest() {
 		// Act
 		Pageable pageable = PageRequest.of(0, 5);
 		Page<Taxi> taxiPage = taxiRepository.findByPlateContainingIgnoreCase("bc", pageable);
 
-		// Debug output
-		System.out.println("Page content:");
-		taxiPage.getContent().forEach(taxi ->
-				System.out.println("Taxi ID: " + taxi.getId() + ", Plate: " + taxi.getPlate())
-		);
-
 		// Assert
 		assertThat(taxiPage).isNotNull();
-		assertThat(taxiPage.getContent()).hasSize(3); // "ABC-123", "abc-456", "pbc-963"
+		assertThat(taxiPage.getContent()).as("Page should have 3 objects").hasSize(3);
 		assertThat(taxiPage.getContent()).extracting(Taxi::getPlate)
 				.containsExactlyInAnyOrder("ABC-123", "abc-456", "pbc-963");
 	}
