@@ -1,10 +1,12 @@
 package com.fleetmanagement.api_rest.persistence.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
-import lombok.*;
-
-import java.util.List;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "taxis")
@@ -19,9 +21,9 @@ public class Taxi {
 	@Column(name = "plate")
 	private String plate;
 
-	@OneToMany(mappedBy = "taxiId", cascade = CascadeType.ALL, orphanRemoval = true)
+	/*@OneToMany(mappedBy = "taxiId", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonManagedReference
-	private List<Trajectory> trajectories;
+	private List<Trajectory> trajectories;*/
 
 }
 

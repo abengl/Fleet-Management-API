@@ -1,5 +1,6 @@
 package com.fleetmanagement.api_rest.persistence.repository;
 
+
 import com.fleetmanagement.api_rest.persistence.entity.Taxi;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,10 +14,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 
 @DataJpaTest
 @Transactional
@@ -30,24 +31,48 @@ public class TaxiRepositoryTest {
 	@BeforeEach
 	public void setUp() {
 		// Arrange
-		taxiRepository.save(new Taxi(1,"ABC-123", new ArrayList<>()));
-		taxiRepository.save(new Taxi(2,"abc-456", new ArrayList<>()));
-		taxiRepository.save(new Taxi(3,"PQR-000", new ArrayList<>()));
+		List<Taxi> taxis = Arrays.asList(
+				new Taxi(1, "ABC-123"),
+				new Taxi(2, "abc-456"),
+				new Taxi(3, "PQR-000"),
+				new Taxi(4, "pbc-963"),
+				new Taxi(5, "FGH-789"),
+				new Taxi(6, "FGH-456"),
+				new Taxi(7, "FGH-951")
+		);
+		taxiRepository.saveAll(taxis);
 	}
 
 	@Test
-	@DisplayName("TaxiRepository - Testing method FindAll() - It should return a taxi page with pagination by default" +
-			" " +
-			"starts at page 0 with a limit of 10 items")
+	@DisplayName("Testing method findAll() - It should return a page with all taxis with pagination")
 	public void TaxiRepository_findAll_ReturnTaxiPage(){
 		// Act
 		Pageable pageable = PageRequest.of(0, 5);
 		Page<Taxi> taxiPage = taxiRepository.findAll(pageable);
 
 		// Debug output
-		System.out.println("Total elements: " + taxiPage.getTotalElements());
-		System.out.println("Total pages: " + taxiPage.getTotalPages());
-		System.out.println("Current page number: " + taxiPage.getNumber());
+		System.out.println("First page content:");
+		taxiPage.getContent().forEach(taxi ->
+				System.out.println("Taxi ID: " + taxi.getId() + ", Plate: " + taxi.getPlate())
+		);
+
+		// Assert
+		assertThat(taxiPage).isNotNull();
+		assertThat(taxiPage.getTotalPages()).isEqualTo(2);
+		assertThat(taxiPage.getTotalElements()).isEqualTo(7);
+		assertThat(taxiPage.getNumber()).isEqualTo(0);
+		assertThat(taxiPage.getContent()).hasSize(5);
+		assertThat(taxiPage.getContent().get(0).getPlate()).isEqualTo("ABC-123");
+	}
+
+	@Test
+	@DisplayName("Testing findByPlateContainingIgnoreCase() - It should return a taxi page matching the plate")
+	public void TaxiRepository_findByPlateContainingIgnoreCase_ReturnTaxiPage() {
+		// Act
+		Pageable pageable = PageRequest.of(0, 5);
+		Page<Taxi> taxiPage = taxiRepository.findByPlateContainingIgnoreCase("bc", pageable);
+
+		// Debug output
 		System.out.println("Page content:");
 		taxiPage.getContent().forEach(taxi ->
 				System.out.println("Taxi ID: " + taxi.getId() + ", Plate: " + taxi.getPlate())
@@ -55,35 +80,10 @@ public class TaxiRepositoryTest {
 
 		// Assert
 		assertThat(taxiPage).isNotNull();
-		assertThat(taxiPage.getContent()).hasSize(3);
-		assertThat(taxiPage.getContent().get(0).getPlate()).isIn("ABC-123");
-	}
-
-	@Test
-	@DisplayName("TaxiRepository - Testing existsById() - It should return true if an id exists in the db or false " +
-			"otherwise")
-	public void TaxiRepository_existsById_ReturnBoolean() {
-		// Act
-		boolean case1 = taxiRepository.existsById(1);
-		boolean case2 = taxiRepository.existsById(100);
-		// Assert
-		assertThat(case1).isTrue();
-		assertThat(case2).isFalse();
-	}
-
-	@Test
-	@DisplayName("TaxiRepository - Testing findByPlateContainingIgnoreCase() - It should return taxis with matching " +
-			"plate")
-	public void TaxiRepository_findByPlateContainingIgnoreCase_ReturnTaxiPage() {
-		// Act
-		Pageable pageable = PageRequest.of(0, 3);
-		Page<Taxi> taxiPage = taxiRepository.findByPlateContainingIgnoreCase("abc", pageable);
-
-		// Assert
-		assertThat(taxiPage).isNotNull();
-		assertThat(taxiPage.getContent()).hasSize(2); // "ABC-123" and "abc-456"
+		assertThat(taxiPage.getContent()).hasSize(3); // "ABC-123", "abc-456", "pbc-963"
 		assertThat(taxiPage.getContent()).extracting(Taxi::getPlate)
-				.containsExactlyInAnyOrder("ABC-123", "abc-456");
+				.containsExactlyInAnyOrder("ABC-123", "abc-456", "pbc-963");
 	}
 
 }
+
