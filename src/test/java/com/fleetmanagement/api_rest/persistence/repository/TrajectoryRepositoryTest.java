@@ -2,10 +2,9 @@ package com.fleetmanagement.api_rest.persistence.repository;
 
 import com.fleetmanagement.api_rest.persistence.entity.Taxi;
 import com.fleetmanagement.api_rest.persistence.entity.Trajectory;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -17,8 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,7 +27,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class TrajectoryRepositoryTest {
 
 	@Autowired
@@ -35,80 +35,63 @@ class TrajectoryRepositoryTest {
 	@Autowired
 	TaxiRepository taxiRepository;
 
-	@BeforeAll
-	void setUp() throws ParseException {
+	@BeforeEach
+	public void setUp() throws ParseException {
 		// Arrange
-		Taxi taxi1 = new Taxi(1, "ABC-123", new ArrayList<>());
-		Taxi taxi2 = new Taxi(2, "abc-456", new ArrayList<>());
+		Taxi taxi1 = new Taxi(1, "ABC-123");
+		Taxi taxi2 = new Taxi(2, "PQR-456");
 
-		Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse("2024-01-01");
-		Date date2 = new SimpleDateFormat("yyyy-MM-dd").parse("2024-02-02");
-		Date date3 = new SimpleDateFormat("yyyy-MM-dd").parse("2024-01-31");
-		Date date4 = new SimpleDateFormat("yyyy-MM-dd").parse("2024-02-28");
+		SimpleDateFormat formatStringToDate = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.ENGLISH);
 
-		Trajectory trajectory1 = new Trajectory(10, taxi1, date1, 100.00, -100.00);
-		Trajectory trajectory2 = new Trajectory(20, taxi2, date2, 200.00, -200.00);
-		Trajectory trajectory3 = new Trajectory(30, taxi1, date3, 100.00, -100.00);
-		Trajectory trajectory4 = new Trajectory(40, taxi2, date4, 200.00, -200.00);
+		Date date1 = formatStringToDate.parse("01-01-2024 10:30:15");
+		Date date2 = formatStringToDate.parse("02-02-2024 14:45:20");
+		Date date3 = formatStringToDate.parse("01-01-2024 08:15:30");
+		Date date4 = formatStringToDate.parse("28-02-2024 20:00:05");
 
-		// Add the trajectories to their respective taxis
-		taxi1.getTrajectories().add(trajectory1);
-		taxi1.getTrajectories().add(trajectory3);
-		taxi2.getTrajectories().add(trajectory2);
-		taxi2.getTrajectories().add(trajectory4);
 
-		// Save the taxis, which will also cascade save the trajectories
-		taxiRepository.save(taxi1);
-		taxiRepository.save(taxi2);
+		double longitude = 100.00;
+		double latitude = -100.00;
+
+		List<Trajectory> trajectories = Arrays.asList(
+				new Trajectory(10, taxi1, date1, latitude, longitude),
+				new Trajectory(20, taxi2, date2, latitude, longitude),
+				new Trajectory(30, taxi1, date3, latitude, longitude),
+				new Trajectory(40, taxi2, date4, latitude, longitude));
+
+		trajectoryRepository.saveAll(trajectories);
 	}
 
+	@Test
+	@DisplayName("Testing method existsById() - It should return a boolean")
+	public void existsByIdTest() {
+		boolean expected1 = taxiRepository.existsById(1);
+		boolean expected2 = taxiRepository.existsById(5);
 
-	@SuppressWarnings("SequencedCollectionMethodCanBeUsed")
+		assertThat(expected1).as("Taxi with ID 1 should exist.").isTrue();
+		assertThat(expected2).as("Taxi with ID 5 should not exist.").isFalse();
+	}
+
 	@Test
 	@DisplayName("Testing method findByTaxiId_IdAndDate() - it should return a page with the matching trajectories")
 	public void findByTaxiIdAndDateTest() throws ParseException {
 
-		Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse("2024-01-01");
-		Pageable pageable = PageRequest.of(0, 4);
-
-		// Act
-		Page<Trajectory> trajectoriesPage = trajectoryRepository.findByTaxiId_IdAndDate(1, date1, pageable);
-
-		// Debug output
-		System.out.println("Page content:");
-		trajectoriesPage.getContent().forEach(trajectory -> System.out.println(
-				"Trajectory ID: " + trajectory.getId() + "\n" + "TaxiID: " + trajectory.getTaxiId()
-						.getId() + "\n" + "Date: " + trajectory.getDate() + "\n" + "Latitude: " + trajectory.getLatitude() + "\n" + "Longitude: " + trajectory.getLongitude()));
-
-		// Assert
-		assertThat(trajectoriesPage).isNotNull();
-		assertThat(trajectoriesPage.getTotalElements()).isEqualTo(1);
-		assertThat(trajectoriesPage.getContent().get(0).getId()).isEqualTo(10);
-	}
-
-	@Test
-	@DisplayName("Testing method findAll() - it should return a page with all trajectories")
-	public void findAllTest() {
+		SimpleDateFormat formatStringToDate = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+		Date date = formatStringToDate.parse("01-01-2024");
 
 		Pageable pageable = PageRequest.of(0, 4);
 
 		// Act
-		Page<Trajectory> trajectoriesPage = trajectoryRepository.findAll(pageable);
-
-		// Debug output
-		System.out.println("Page content:");
-		trajectoriesPage.getContent().forEach(trajectory -> System.out.println(
-				"Trajectory ID: " + trajectory.getId() + "\n" + "TaxiID: " + trajectory.getTaxiId()
-						.getId() + "\n" + "Date: " + trajectory.getDate() + "\n" + "Latitude: " + trajectory.getLatitude() + "\n" + "Longitude: " + trajectory.getLongitude()));
+		Page<Trajectory> trajectoriesPage = trajectoryRepository.findByTaxiId_IdAndDate(1, date, pageable);
 
 		// Assert
 		assertThat(trajectoriesPage).isNotNull();
-		assertThat(trajectoriesPage.getTotalElements()).isEqualTo(4);
-		assertThat(trajectoriesPage.getContent().get(1).getId()).isEqualTo(20);
+		assertThat(trajectoriesPage.getTotalElements()).as("Total elements should be 2").isEqualTo(2);
+		assertThat(trajectoriesPage.getContent().get(0).getId()).as("First element should have ID 10").isEqualTo(10);
+		assertThat(trajectoriesPage.getContent().get(1).getId()).as("Second element should have ID 30").isEqualTo(30);
 	}
 
 	@Test
-	@DisplayName("Testing method findLatestLocations() - it should return a page with the latest " + "trajectories")
+	@DisplayName("Testing method findLatestLocations() - it should return a page with the latest trajectories")
 	public void findLatestLocationsTest() {
 
 		Pageable pageable = PageRequest.of(0, 4);
@@ -116,16 +99,10 @@ class TrajectoryRepositoryTest {
 		// Act
 		Page<Trajectory> trajectoriesPage = trajectoryRepository.findLatestLocations(pageable);
 
-		// Debug output
-		System.out.println("Page content:");
-		trajectoriesPage.getContent().forEach(trajectory -> System.out.println(
-				"Trajectory ID: " + trajectory.getId() + "\n" + "TaxiID: " + trajectory.getTaxiId()
-						.getId() + "\n" + "Date: " + trajectory.getDate() + "\n" + "Latitude: " + trajectory.getLatitude() + "\n" + "Longitude: " + trajectory.getLongitude()));
-
 		// Assert
 		assertThat(trajectoriesPage).isNotNull();
-		assertThat(trajectoriesPage.getTotalElements()).isEqualTo(2);
-		assertThat(trajectoriesPage.getContent().get(0).getId()).isEqualTo(30);
-		assertThat(trajectoriesPage.getContent().get(1).getId()).isEqualTo(40);
+		assertThat(trajectoriesPage.getTotalElements()).as("Total elements should be 2").isEqualTo(2);
+		assertThat(trajectoriesPage.getContent().get(0).getId()).as("First element should have ID 10").isEqualTo(10);
+		assertThat(trajectoriesPage.getContent().get(1).getId()).as("Second element should have ID 40").isEqualTo(40);
 	}
 }
