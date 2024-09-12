@@ -1,9 +1,8 @@
 package com.fleetmanagement.api_rest.presentation.controller;
 
-import com.fleetmanagement.api_rest.presentation.controller.TrajectoryController;
+import com.fleetmanagement.api_rest.business.service.TrajectoryService;
 import com.fleetmanagement.api_rest.presentation.dto.LatestTrajectoryDTO;
 import com.fleetmanagement.api_rest.presentation.dto.TrajectoryDTO;
-import com.fleetmanagement.api_rest.business.service.TrajectoryService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

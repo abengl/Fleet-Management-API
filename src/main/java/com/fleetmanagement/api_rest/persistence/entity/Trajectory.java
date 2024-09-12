@@ -1,8 +1,9 @@
 package com.fleetmanagement.api_rest.persistence.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
@@ -17,7 +18,6 @@ public class Trajectory {
 	private Integer id;
 
 	@ManyToOne
-	@JsonBackReference
 	@JoinColumn(name = "taxi_id", referencedColumnName = "id", nullable = false)
 	private Taxi taxiId;
 
