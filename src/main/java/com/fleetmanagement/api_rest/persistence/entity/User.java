@@ -1,12 +1,12 @@
 package com.fleetmanagement.api_rest.persistence.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "users")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class User {
 
@@ -23,4 +23,9 @@ public class User {
 	@Column(name = "password")
 	private String password;
 
+	public User(String name, String email, String password) {
+		this.name = name;
+		this.email = email;
+		this.password = password;
+	}
 }
