@@ -8,13 +8,14 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 @Entity
-@Table(name = "trajectories")
+@Table(name = "trajectories", schema = "api")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Trajectory {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
 	@ManyToOne

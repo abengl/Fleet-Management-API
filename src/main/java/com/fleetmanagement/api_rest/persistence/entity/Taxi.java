@@ -5,12 +5,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "taxis")
+@Table(name = "taxis", schema = "api")
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Taxi {
@@ -20,10 +22,6 @@ public class Taxi {
 
 	@Column(name = "plate")
 	private String plate;
-
-	/*@OneToMany(mappedBy = "taxiId", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JsonManagedReference
-	private List<Trajectory> trajectories;*/
 
 }
 
