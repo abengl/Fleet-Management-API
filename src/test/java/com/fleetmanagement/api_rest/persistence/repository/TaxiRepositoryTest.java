@@ -32,15 +32,17 @@ public class TaxiRepositoryTest {
 	public void setUp() {
 		// Arrange
 		List<Taxi> taxis = Arrays.asList(
-				new Taxi(1, "ABC-123"),
-				new Taxi(2, "abc-456"),
-				new Taxi(3, "PQR-000"),
-				new Taxi(4, "pbc-963"),
-				new Taxi(5, "FGH-789"),
-				new Taxi(6, "FGH-456"),
-				new Taxi(7, "FGH-951")
+				Taxi.builder().plate("ABC-123").build(),
+				Taxi.builder().plate("abc-456").build(),
+				Taxi.builder().plate("PQR-000").build(),
+				Taxi.builder().plate("pbc-963").build(),
+				Taxi.builder().plate("FGH-789").build(),
+				Taxi.builder().plate("FGH-456").build(),
+				Taxi.builder().plate("FGH-951").build()
 		);
 		taxiRepository.saveAll(taxis);
+		System.out.println("Data successfully added:");
+		taxiRepository.findAll().forEach(System.out::println);
 	}
 
 	@Test
@@ -49,6 +51,8 @@ public class TaxiRepositoryTest {
 		// Act
 		Pageable pageable = PageRequest.of(0, 5);
 		Page<Taxi> taxiPage = taxiRepository.findAll(pageable);
+
+		taxiPage.getContent().forEach(System.out::println);
 
 		// Assert
 		assertThat(taxiPage).isNotNull();
@@ -64,6 +68,8 @@ public class TaxiRepositoryTest {
 		// Act
 		Pageable pageable = PageRequest.of(0, 5);
 		Page<Taxi> taxiPage = taxiRepository.findByPlateContainingIgnoreCase("bc", pageable);
+
+		taxiPage.getContent().forEach(System.out::println);
 
 		// Assert
 		assertThat(taxiPage).isNotNull();
