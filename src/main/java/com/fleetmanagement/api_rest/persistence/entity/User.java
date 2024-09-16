@@ -1,11 +1,15 @@
 package com.fleetmanagement.api_rest.persistence.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", schema = "api")
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {

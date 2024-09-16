@@ -817,13 +817,13 @@
               }
             },
             "url": {
-              "raw": "{{baseURL}}/users/24",
+              "raw": "{{baseURL}}/users/10",
               "host": [
                 "{{baseURL}}"
               ],
               "path": [
                 "users",
-                "24"
+                "10"
               ]
             }
           },

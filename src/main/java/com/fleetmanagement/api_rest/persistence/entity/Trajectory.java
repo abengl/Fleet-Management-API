@@ -1,23 +1,26 @@
 package com.fleetmanagement.api_rest.persistence.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
 @Entity
-@Table(name = "trajectories")
+@Table(name = "trajectories", schema = "api")
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Trajectory {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
 	@ManyToOne
-	@JsonBackReference
 	@JoinColumn(name = "taxi_id", referencedColumnName = "id", nullable = false)
 	private Taxi taxiId;
 

@@ -1,16 +1,13 @@
 package com.fleetmanagement.api_rest.presentation.controller;
 
-import com.fleetmanagement.api_rest.presentation.controller.TrajectoryController;
+import com.fleetmanagement.api_rest.business.service.TrajectoryService;
 import com.fleetmanagement.api_rest.presentation.dto.LatestTrajectoryDTO;
 import com.fleetmanagement.api_rest.presentation.dto.TrajectoryDTO;
-import com.fleetmanagement.api_rest.business.service.TrajectoryService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -22,8 +19,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(TrajectoryController.class)
-@ActiveProfiles("test")
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class TrajectoryControllerTest {
 
 	@MockBean
@@ -32,7 +27,7 @@ class TrajectoryControllerTest {
 	MockMvc mockMvc;
 
 	@Test
-	@DisplayName("Testing getAllTrajectoriesByIdAndPlate() - Should return a list of TrajectoryDTOs when valid")
+	@DisplayName("Testing getAllTrajectoriesByIdAndPlate() - It should return a list of TrajectoryDTOs when valid")
 	void getAllTrajectoriesByIdAndPlateTest() throws Exception {
 		// Arrange
 		List<TrajectoryDTO> trajectories = List.of(

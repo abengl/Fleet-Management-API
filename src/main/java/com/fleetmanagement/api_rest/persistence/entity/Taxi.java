@@ -1,27 +1,25 @@
 package com.fleetmanagement.api_rest.persistence.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.*;
-
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "taxis")
+@Table(name = "taxis", schema = "api")
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Taxi {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
 	@Column(name = "plate")
 	private String plate;
-
-	@OneToMany(mappedBy = "taxiId", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JsonManagedReference
-	private List<Trajectory> trajectories;
 
 }
 
