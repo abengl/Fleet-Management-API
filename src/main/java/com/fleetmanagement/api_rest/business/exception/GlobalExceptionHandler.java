@@ -6,11 +6,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.security.InvalidParameterException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+	@ExceptionHandler(NoHandlerFoundException.class)
+	public ResponseEntity<ErrorResponse> handleNotFoundException(NoHandlerFoundException ex) {
+		ErrorResponse errorResponse = new ErrorResponse("The requested endpoint does not exist: " + ex.getRequestURL()
+		);
+		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+	}
 
 	@ExceptionHandler(ValueNotFoundException.class)
 	@ResponseBody
