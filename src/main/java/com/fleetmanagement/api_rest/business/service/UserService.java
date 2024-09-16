@@ -67,16 +67,6 @@ public class UserService {
 
 	}
 
-	public UserResponseDTO deleteUser(Integer id) {
-		User user = userRepository.findById(id)
-				.orElseThrow(() -> new ValueNotFoundException("User with id " + id + " doesn't exist."));
-
-		userRepository.delete(user);
-
-		// Map back to ResponseDTO and return the saved user
-		return userMapper.toUserResponseDTO(user);
-	}
-
 	public UserResponseDTO updateUserByName(UserCreateDTO userCreateDTO, Integer id) {
 
 		if(userCreateDTO.getPassword() != null) {
@@ -96,6 +86,16 @@ public class UserService {
 
 		user.setName(userCreateDTO.getName());
 
+		return userMapper.toUserResponseDTO(user);
+	}
+
+	public UserResponseDTO deleteUser(Integer id) {
+		User user = userRepository.findById(id)
+				.orElseThrow(() -> new ValueNotFoundException("User with id " + id + " doesn't exist."));
+
+		userRepository.delete(user);
+
+		// Map back to ResponseDTO and return the saved user
 		return userMapper.toUserResponseDTO(user);
 	}
 }
