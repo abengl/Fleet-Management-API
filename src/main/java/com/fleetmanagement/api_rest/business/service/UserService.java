@@ -6,7 +6,7 @@ import com.fleetmanagement.api_rest.persistence.entity.User;
 import com.fleetmanagement.api_rest.persistence.repository.UserRepository;
 import com.fleetmanagement.api_rest.presentation.dto.UserCreateDTO;
 import com.fleetmanagement.api_rest.presentation.dto.UserResponseDTO;
-import com.fleetmanagement.api_rest.presentation.mapper.UserMapper;
+import com.fleetmanagement.api_rest.utils.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

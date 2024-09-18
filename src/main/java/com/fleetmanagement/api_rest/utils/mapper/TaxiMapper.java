@@ -1,7 +1,7 @@
-package com.fleetmanagement.api_rest.presentation.mapper;
+package com.fleetmanagement.api_rest.utils.mapper;
 
-import com.fleetmanagement.api_rest.presentation.dto.TaxiDTO;
 import com.fleetmanagement.api_rest.persistence.entity.Taxi;
+import com.fleetmanagement.api_rest.presentation.dto.TaxiDTO;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

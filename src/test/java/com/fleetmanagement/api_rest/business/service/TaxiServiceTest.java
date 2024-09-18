@@ -5,7 +5,7 @@ import com.fleetmanagement.api_rest.business.exception.ValueNotFoundException;
 import com.fleetmanagement.api_rest.persistence.entity.Taxi;
 import com.fleetmanagement.api_rest.persistence.repository.TaxiRepository;
 import com.fleetmanagement.api_rest.presentation.dto.TaxiDTO;
-import com.fleetmanagement.api_rest.presentation.mapper.TaxiMapper;
+import com.fleetmanagement.api_rest.utils.mapper.TaxiMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

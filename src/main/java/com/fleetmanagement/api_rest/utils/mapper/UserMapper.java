@@ -1,8 +1,8 @@
-package com.fleetmanagement.api_rest.presentation.mapper;
+package com.fleetmanagement.api_rest.utils.mapper;
 
+import com.fleetmanagement.api_rest.persistence.entity.User;
 import com.fleetmanagement.api_rest.presentation.dto.UserCreateDTO;
 import com.fleetmanagement.api_rest.presentation.dto.UserResponseDTO;
-import com.fleetmanagement.api_rest.persistence.entity.User;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
