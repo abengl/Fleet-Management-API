@@ -14,4 +14,4 @@ FROM
     api.permissions p ON rp.permission_id = p.id
 
 WHERE
-	u.name = 'sofia';
+	u.name = 'admin';

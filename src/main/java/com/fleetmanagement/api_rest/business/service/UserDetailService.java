@@ -40,6 +40,59 @@ public class UserDetailService implements UserDetailsService {
 	@Autowired
 	private RoleRepository roleRepository;
 
+	public AuthResponse loginUser(AuthLoginRequest authLoginRequest) {
+		System.out.println("UserDetailService -> loginUser -> authLoginRequest " + authLoginRequest);
+		String email = authLoginRequest.email();
+		String password = authLoginRequest.password();
+
+		Authentication authentication = this.authenticate(email, password);
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+
+		String accessToken = jwtUtils.createToken(authentication);
+
+		UserEntity userEntity = (UserEntity) authentication.getPrincipal();
+		UserDTO userDTO = new UserDTO(userEntity.getId(), userEntity.getEmail());
+
+		AuthResponse authResponse = new AuthResponse(accessToken, userDTO);
+
+		return authResponse;
+	}
+
+	public Authentication authenticate(String email, String password) {
+		System.out.println("UserDetailService -> authenticate -> email " + email);
+		System.out.println("UserDetailService -> authenticate -> password " + password);
+		UserDetails userDetails = this.loadUserByUsername(email);
+
+		if (!passwordEncoder.matches(password, userDetails.getPassword())) {
+			throw new BadCredentialsException("Incorrect Password");
+		}
+
+		UserEntity userEntity = userRepository.findByEmail(email)
+				.orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+
+		return new UsernamePasswordAuthenticationToken(userEntity, null, userDetails.getAuthorities());
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String email) {
+		System.out.println("UserDetailService -> loadUserByUsername -> email " + email);
+		UserEntity userEntity = userRepository.findByEmail(email)
+				.orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+
+		List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
+
+		userEntity.getRoles().forEach(
+				role -> authorityList.add(new SimpleGrantedAuthority("ROLE_".concat(role.getRoleEnum().name()))));
+
+		userEntity.getRoles().stream().flatMap(role -> role.getPermissionList().stream())
+				.forEach(permission -> authorityList.add(new SimpleGrantedAuthority(permission.getName())));
+
+		return new User(userEntity.getEmail(), userEntity.getPassword(), userEntity.isEnabled(),
+				userEntity.isAccountNonExpired(), userEntity.isCredentialsNonExpired(),
+				userEntity.isAccountNonLocked(),
+				authorityList);
+	}
+
 	public AuthResponse createUser(AuthCreateUserRequest createRoleRequest) {
 
 		String name = createRoleRequest.name();
@@ -87,60 +140,5 @@ public class UserDetailService implements UserDetailsService {
 		AuthResponse authResponse = new AuthResponse(accessToken, userDTO);
 
 		return authResponse;
-	}
-
-	public AuthResponse loginUser(AuthLoginRequest authLoginRequest) {
-
-		String email = authLoginRequest.email();
-		String password = authLoginRequest.password();
-
-		Authentication authentication = this.authenticate(email, password);
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-
-		String accessToken = jwtUtils.createToken(authentication);
-
-		UserEntity userEntity = (UserEntity) authentication.getPrincipal();
-		UserDTO userDTO = new UserDTO(userEntity.getId(), userEntity.getEmail());
-
-		AuthResponse authResponse = new AuthResponse(accessToken, userDTO);
-//		AuthResponse authResponse = new AuthResponse(email, "User logged successfully", accessToken, true);
-
-		return authResponse;
-	}
-
-	public Authentication authenticate(String email, String password) {
-		UserDetails userDetails = this.loadUserByUsername(email);
-
-//		if (userDetails == null) {
-//			throw new BadCredentialsException(String.format("Invalid email or password"));
-//		}
-
-		if (!passwordEncoder.matches(password, userDetails.getPassword())) {
-			throw new BadCredentialsException("Incorrect Password");
-		}
-
-		UserEntity userEntity = userRepository.findByEmail(email)
-				.orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
-
-		return new UsernamePasswordAuthenticationToken(userEntity, null, userDetails.getAuthorities());
-	}
-
-	@Override
-	public UserDetails loadUserByUsername(String email) {
-		UserEntity userEntity = userRepository.findByEmail(email)
-				.orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
-
-		List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
-
-		userEntity.getRoles().forEach(
-				role -> authorityList.add(new SimpleGrantedAuthority("ROLE_".concat(role.getRoleEnum().name()))));
-
-		userEntity.getRoles().stream().flatMap(role -> role.getPermissionList().stream())
-				.forEach(permission -> authorityList.add(new SimpleGrantedAuthority(permission.getName())));
-
-		return new User(userEntity.getEmail(), userEntity.getPassword(), userEntity.isEnabled(),
-				userEntity.isAccountNonExpired(), userEntity.isCredentialsNonExpired(),
-				userEntity.isAccountNonLocked(),
-				authorityList);
 	}
 }
