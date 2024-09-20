@@ -6,8 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 
 // 1st parameter @NotBlank String username
 public record AuthCreateUserRequest(
-		@NotBlank String name,
-		@NotBlank String email,
-		@NotBlank String password,
+		@NotBlank(message = "AuthCreateUserRequest - missing parameter: name") String name,
+		@NotBlank(message = "AuthCreateUserRequest - missing parameter: email") String email,
+		@NotBlank(message = "AuthCreateUserRequest - missing parameter: password") String password,
 		@Valid AuthCreateRoleRequest roleRequest) {
 }
