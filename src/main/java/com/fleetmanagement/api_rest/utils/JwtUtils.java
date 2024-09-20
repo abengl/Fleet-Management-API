@@ -2,8 +2,10 @@ package com.fleetmanagement.api_rest.utils;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.*;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fleetmanagement.api_rest.business.exception.InvalidTokenException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -63,25 +65,35 @@ public class JwtUtils {
 	 */
 	public String createToken(Authentication authentication) {
 
+		System.out.println("JwtUtils -> createToken -> authentication ->" + authentication);
+		// Create an HMAC256 algorithm instance using the private key
 		Algorithm algorithm = Algorithm.HMAC256(this.privateKey);
+		System.out.println("JwtUtils -> createToken -> algorithm ->" + algorithm);
 
+		// Extract the username from the authentication object
 		String username = authentication.getPrincipal().toString();
+		System.out.println("JwtUtils -> createToken -> username ->" + username);
 
+		// Extract and join the authorities (roles/permissions) from the authentication object
 		String authorities = authentication.getAuthorities()
 				.stream()
 				.map(GrantedAuthority::getAuthority)
 				.collect(Collectors.joining(","));
+		System.out.println("JwtUtils -> createToken -> authorities -> " + authorities);
 
+		// Create the JWT token with various claims and sign it with the algorithm
 		String jwtToken = JWT.create()
-				.withIssuer(this.userGenerator)
-				.withSubject(username)
-				.withClaim("authorities", authorities)
-				.withIssuedAt(new Date())
-				.withExpiresAt(new Date(System.currentTimeMillis() + 1800000))
-				.withJWTId(UUID.randomUUID().toString())
-				.withNotBefore(new Date(System.currentTimeMillis()))
-				.sign(algorithm);
-
+				.withIssuer(this.userGenerator) // Set the issuer of the token
+				.withSubject(username) // Set the subject (username) of the token
+				.withClaim("authorities", authorities) // Add authorities as a custom claim
+				.withIssuedAt(new Date()) // Set the token issuance time
+				.withExpiresAt(new Date(
+						System.currentTimeMillis() + 1800000)) // Set the token expiration time (30 minutes from now)
+				.withJWTId(UUID.randomUUID().toString()) // Set a unique identifier for the token
+				.withNotBefore(new Date(System.currentTimeMillis())) // Set the time before which the token is not
+				// valid
+				.sign(algorithm); // Sign the token with the algorithm
+		// Return the generated JWT token
 		return jwtToken;
 	}
 
@@ -96,6 +108,9 @@ public class JwtUtils {
 	 * @throws RuntimeException if the token is invalid
 	 */
 	public DecodedJWT validateToken(String token) {
+
+		System.out.println("JwtUtils -> validateToken -> ");
+
 		try {
 			Algorithm algorithm = Algorithm.HMAC256(this.privateKey);
 
@@ -103,12 +118,19 @@ public class JwtUtils {
 					.withIssuer(this.userGenerator)
 					.build()
 					.verify(token);
-
 			return decodedJWT;
-
-		} catch (Exception e) {
-			throw new RuntimeException("Token invalid, not Authorized");
+		} catch (JWTDecodeException e) {
+			throw new InvalidTokenException("Invalid token format.");
+		} catch (TokenExpiredException e) {
+			throw new InvalidTokenException("Token has expired.");
+		} catch (SignatureVerificationException e) {
+			throw new InvalidTokenException("Invalid token signature.");
+		} catch (AlgorithmMismatchException e) {
+			throw new InvalidTokenException("Algorithm mismatch.");
+		} catch (JWTVerificationException e) {
+			throw new InvalidTokenException("Token verification failed.");
 		}
+
 	}
 
 	/**
@@ -118,6 +140,8 @@ public class JwtUtils {
 	 * @return the username extracted from the token
 	 */
 	public String extractUsername(DecodedJWT decodedJWT) {
+
+		System.out.println("JwtUtils -> extractUsername ->  ");
 		return decodedJWT.getSubject().toString();
 	}
 
@@ -129,7 +153,10 @@ public class JwtUtils {
 	 * @return the claim associated with the specified name
 	 */
 	public Claim getSpecificClaim(DecodedJWT decodedJWT, String claimName) {
+
+		System.out.println("JwtUtils -> getSpecificClaim -> ");
 		return decodedJWT.getClaim(claimName);
 	}
+
 
 }
