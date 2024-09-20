@@ -149,13 +149,13 @@
           "response": []
         },
         {
-          "name": "login missing credentials - no email",
+          "name": "login missing credentials - no password",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"/login endpoint responds with 400 if email is missing\", () => {",
+                  "pm.test(\"/login endpoint responds with 400 if password is missing\", () => {",
                   "    pm.expect(pm.response.code).to.eq(400);",
                   "});",
                   ""
@@ -190,13 +190,13 @@
           "response": []
         },
         {
-          "name": "login missing credentials - no password",
+          "name": "login missing credentials - no email",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test(\"/login endpoint responds with 400 if email or password are missing\", () => {",
+                  "pm.test(\"/login endpoint responds with 400 if email is missing\", () => {",
                   "    pm.expect(pm.response.code).to.eq(400);",
                   "});",
                   "",
@@ -212,7 +212,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{ \"password\": \"{{testUserPassword}}\" }variable in postman testment.sspm.res",
+              "raw": "{ \"password\": \"{{testUserPassword}}\" }",
               "options": {
                 "raw": {
                   "language": "json"
