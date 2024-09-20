@@ -1,6 +1,6 @@
 package com.fleetmanagement.api_rest.persistence.repository;
 
-import com.fleetmanagement.api_rest.persistence.entity.User;
+import com.fleetmanagement.api_rest.persistence.entity.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,14 +30,14 @@ class UserRepositoryTest {
 
 	@BeforeEach
 	void setUp() {
-		List<User> users = Arrays.asList(
-				User.builder().name("User 1").email("user1@example.com").password("password123").build(),
-				User.builder().name("User 2").email("user2@example.com").password("password123").build(),
-				User.builder().name("User 3").email("user3@example.com").password("password123").build(),
-				User.builder().name("User 4").email("user4@example.com").password("password123").build()
+		List<UserEntity> userEntities = Arrays.asList(
+				UserEntity.builder().name("User 1").email("user1@example.com").password("password123").build(),
+				UserEntity.builder().name("User 2").email("user2@example.com").password("password123").build(),
+				UserEntity.builder().name("User 3").email("user3@example.com").password("password123").build(),
+				UserEntity.builder().name("User 4").email("user4@example.com").password("password123").build()
 		);
 
-		userRepository.saveAll(users);
+		userRepository.saveAll(userEntities);
 		System.out.println("Data successfully added:");
 		userRepository.findAll().forEach(System.out::println);
 	}
@@ -47,7 +47,7 @@ class UserRepositoryTest {
 	public void findAllTest() {
 		// Act
 		Pageable pageable = PageRequest.of(0, 5);
-		Page<User> userPage = userRepository.findAll(pageable);
+		Page<UserEntity> userPage = userRepository.findAll(pageable);
 
 		System.out.println("T1 - User page:");
 		userPage.getContent().forEach(System.out::println);
@@ -75,13 +75,15 @@ class UserRepositoryTest {
 	@Test
 	@DisplayName("Testing method save() - It should return boolean")
 	void saveTest() {
-		User newUser = User.builder().name("User 5").email("user5@example.com").password("password123").build();
+		UserEntity
+				newUserEntity =
+				UserEntity.builder().name("User 5").email("user5@example.com").password("password123").build();
 
 		// Act
-		User expected = userRepository.save(newUser);
+		UserEntity expected = userRepository.save(newUserEntity);
 
 		System.out.println("T3 - New user added");
-		System.out.println(newUser);
+		System.out.println(newUserEntity);
 
 		// Assert
 		assertThat(expected.getName()).as("New user name should be User 5").isEqualTo("User 5");
@@ -93,15 +95,17 @@ class UserRepositoryTest {
 	@Test
 	@DisplayName("Testing method findById() - It should return the entity")
 	void findByIdTest() {
-		User newUser = User.builder().name("User 5").email("user5@example.com").password("password123").build();
-		userRepository.save(newUser);
+		UserEntity
+				newUserEntity =
+				UserEntity.builder().name("User 5").email("user5@example.com").password("password123").build();
+		userRepository.save(newUserEntity);
 
 		System.out.println("T4 - New user added");
-		System.out.println(newUser);
+		System.out.println(newUserEntity);
 
 		// Act
-		Optional<User> expected1 = userRepository.findById(newUser.getId());
-		Optional<User> expected2 = userRepository.findById(100);
+		Optional<UserEntity> expected1 = userRepository.findById(newUserEntity.getId());
+		Optional<UserEntity> expected2 = userRepository.findById(100);
 
 		// Assert
 		assertThat(expected1).as("User should be retrievable by ID").isPresent();
@@ -111,15 +115,17 @@ class UserRepositoryTest {
 	@Test
 	@DisplayName("Testing method delete() - It deletes the entity without return value")
 	void deleteTest() {
-		User newUser = User.builder().name("User 5").email("user5@example.com").password("password123").build();
-		userRepository.save(newUser);
+		UserEntity
+				newUserEntity =
+				UserEntity.builder().name("User 5").email("user5@example.com").password("password123").build();
+		userRepository.save(newUserEntity);
 
 		System.out.println("T5 - New user added");
-		System.out.println(newUser);
+		System.out.println(newUserEntity);
 
 		// Act
-		userRepository.delete(newUser);
-		Optional<User> expected1 = userRepository.findById(newUser.getId());
+		userRepository.delete(newUserEntity);
+		Optional<UserEntity> expected1 = userRepository.findById(newUserEntity.getId());
 
 		// Assert
 		assertThat(expected1).as("User should be empty").isEmpty();

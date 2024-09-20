@@ -1,7 +1,7 @@
 package com.fleetmanagement.api_rest.persistence.repository;
 
 
-import com.fleetmanagement.api_rest.persistence.entity.Taxi;
+import com.fleetmanagement.api_rest.persistence.entity.TaxiEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,16 +31,16 @@ public class TaxiRepositoryTest {
 	@BeforeEach
 	public void setUp() {
 		// Arrange
-		List<Taxi> taxis = Arrays.asList(
-				Taxi.builder().plate("ABC-123").build(),
-				Taxi.builder().plate("abc-456").build(),
-				Taxi.builder().plate("PQR-000").build(),
-				Taxi.builder().plate("pbc-963").build(),
-				Taxi.builder().plate("FGH-789").build(),
-				Taxi.builder().plate("FGH-456").build(),
-				Taxi.builder().plate("FGH-951").build()
+		List<TaxiEntity> taxiEntities = Arrays.asList(
+				TaxiEntity.builder().plate("ABC-123").build(),
+				TaxiEntity.builder().plate("abc-456").build(),
+				TaxiEntity.builder().plate("PQR-000").build(),
+				TaxiEntity.builder().plate("pbc-963").build(),
+				TaxiEntity.builder().plate("FGH-789").build(),
+				TaxiEntity.builder().plate("FGH-456").build(),
+				TaxiEntity.builder().plate("FGH-951").build()
 		);
-		taxiRepository.saveAll(taxis);
+		taxiRepository.saveAll(taxiEntities);
 		System.out.println("Data successfully added:");
 		taxiRepository.findAll().forEach(System.out::println);
 	}
@@ -50,7 +50,7 @@ public class TaxiRepositoryTest {
 	public void findAllTest() {
 		// Act
 		Pageable pageable = PageRequest.of(0, 5);
-		Page<Taxi> taxiPage = taxiRepository.findAll(pageable);
+		Page<TaxiEntity> taxiPage = taxiRepository.findAll(pageable);
 
 		taxiPage.getContent().forEach(System.out::println);
 
@@ -67,14 +67,14 @@ public class TaxiRepositoryTest {
 	public void findByPlateTest() {
 		// Act
 		Pageable pageable = PageRequest.of(0, 5);
-		Page<Taxi> taxiPage = taxiRepository.findByPlateContainingIgnoreCase("bc", pageable);
+		Page<TaxiEntity> taxiPage = taxiRepository.findByPlateContainingIgnoreCase("bc", pageable);
 
 		taxiPage.getContent().forEach(System.out::println);
 
 		// Assert
 		assertThat(taxiPage).isNotNull();
 		assertThat(taxiPage.getContent()).as("Page should have 3 objects").hasSize(3);
-		assertThat(taxiPage.getContent()).extracting(Taxi::getPlate)
+		assertThat(taxiPage.getContent()).extracting(TaxiEntity::getPlate)
 				.containsExactlyInAnyOrder("ABC-123", "abc-456", "pbc-963");
 	}
 

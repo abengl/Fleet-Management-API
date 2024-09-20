@@ -7,14 +7,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-
-@Entity
-@Table(name = "trajectories", schema = "api")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Trajectory {
+@Entity
+@Table(name = "trajectories", schema = "api")
+public class TrajectoryEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +21,7 @@ public class Trajectory {
 
 	@ManyToOne
 	@JoinColumn(name = "taxi_id", referencedColumnName = "id", nullable = false)
-	private Taxi taxiId;
+	private TaxiEntity taxiId;
 
 	@Column(name = "date")
 	private Date date;

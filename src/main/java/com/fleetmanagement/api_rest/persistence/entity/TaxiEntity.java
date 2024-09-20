@@ -6,20 +6,22 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "taxis", schema = "api")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Taxi {
+@Entity
+@Table(name = "taxis", schema = "api")
+public class TaxiEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 
 	@Column(name = "plate")
 	private String plate;
 
 }
+
+
 
