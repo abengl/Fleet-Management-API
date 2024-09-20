@@ -2,7 +2,7 @@ package com.fleetmanagement.api_rest.business.service;
 
 import com.fleetmanagement.api_rest.business.exception.UserAlreadyExistsException;
 import com.fleetmanagement.api_rest.business.exception.ValueNotFoundException;
-import com.fleetmanagement.api_rest.persistence.entity.User;
+import com.fleetmanagement.api_rest.persistence.entity.UserEntity;
 import com.fleetmanagement.api_rest.persistence.repository.UserRepository;
 import com.fleetmanagement.api_rest.presentation.dto.UserCreateDTO;
 import com.fleetmanagement.api_rest.presentation.dto.UserResponseDTO;
@@ -39,7 +39,7 @@ public class UserService {
 		}
 
 		Pageable pageable = PageRequest.of(page, limit);
-		Page<User> usersPage = userRepository.findAll(pageable);
+		Page<UserEntity> usersPage = userRepository.findAll(pageable);
 
 		return usersPage.stream().map(userMapper::toUserResponseDTO).collect(Collectors.toList());
 	}
@@ -59,11 +59,11 @@ public class UserService {
 		}
 
 		// Map DTO to entity
-		User user = userMapper.toUser(userCreateDTO);
-		User savedUser = userRepository.save(user);
+		UserEntity userEntity = userMapper.toUser(userCreateDTO);
+		UserEntity savedUserEntity = userRepository.save(userEntity);
 
 		// Map back to ResponseDTO and return the saved user
-		return userMapper.toUserResponseDTO(savedUser);
+		return userMapper.toUserResponseDTO(savedUserEntity);
 
 	}
 
@@ -81,21 +81,21 @@ public class UserService {
 			throw new InvalidParameterException("Request body is empty.");
 		}
 
-		User user = userRepository.findById(id)
+		UserEntity userEntity = userRepository.findById(id)
 				.orElseThrow(() -> new ValueNotFoundException("User with id " + id + " doesn't exist."));
 
-		user.setName(userCreateDTO.getName());
+		userEntity.setName(userCreateDTO.getName());
 
-		return userMapper.toUserResponseDTO(user);
+		return userMapper.toUserResponseDTO(userEntity);
 	}
 
 	public UserResponseDTO deleteUser(Integer id) {
-		User user = userRepository.findById(id)
+		UserEntity userEntity = userRepository.findById(id)
 				.orElseThrow(() -> new ValueNotFoundException("User with id " + id + " doesn't exist."));
 
-		userRepository.delete(user);
+		userRepository.delete(userEntity);
 
 		// Map back to ResponseDTO and return the saved user
-		return userMapper.toUserResponseDTO(user);
+		return userMapper.toUserResponseDTO(userEntity);
 	}
 }

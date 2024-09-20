@@ -2,7 +2,7 @@ package com.fleetmanagement.api_rest.business.service;
 
 
 import com.fleetmanagement.api_rest.business.exception.ValueNotFoundException;
-import com.fleetmanagement.api_rest.persistence.entity.Taxi;
+import com.fleetmanagement.api_rest.persistence.entity.TaxiEntity;
 import com.fleetmanagement.api_rest.persistence.repository.TaxiRepository;
 import com.fleetmanagement.api_rest.presentation.dto.TaxiDTO;
 import com.fleetmanagement.api_rest.utils.mapper.TaxiMapper;
@@ -36,20 +36,20 @@ public class TaxiServiceTest {
 	@InjectMocks //injects the mocked dependencies into the service
 	private TaxiService taxiService;
 
-	List<Taxi> taxis;
+	List<TaxiEntity> taxiEntities;
 	Pageable pageable;
-	Page<Taxi> taxiPage;
+	Page<TaxiEntity> taxiPage;
 	TaxiDTO taxi1;
 	TaxiDTO taxi2;
 
 	@BeforeEach
 	public void setUp() {
-		taxis = Arrays.asList(
-				Taxi.builder().plate("ABC-123").build(),
-				Taxi.builder().plate("abc-456").build());
+		taxiEntities = Arrays.asList(
+				TaxiEntity.builder().plate("ABC-123").build(),
+				TaxiEntity.builder().plate("abc-456").build());
 
 		pageable = PageRequest.of(0, 10);
-		taxiPage = new PageImpl<>(taxis, pageable, taxis.size());
+		taxiPage = new PageImpl<>(taxiEntities, pageable, taxiEntities.size());
 
 		taxi1 = TaxiDTO.builder().plate("ABC-123").build();
 		taxi2 = TaxiDTO.builder().plate("abc-456").build();
@@ -62,7 +62,7 @@ public class TaxiServiceTest {
 		String plate = "ABC";
 
 		when(taxiRepository.findByPlateContainingIgnoreCase(plate, pageable)).thenReturn(taxiPage);
-		when(taxiMapper.toTaxiDTO(any(Taxi.class))).thenReturn(taxi1, taxi2);
+		when(taxiMapper.toTaxiDTO(any(TaxiEntity.class))).thenReturn(taxi1, taxi2);
 
 		// Act
 		List<TaxiDTO> taxiDTOList = taxiService.getTaxis(plate, 0, 10);
@@ -74,7 +74,7 @@ public class TaxiServiceTest {
 		assertNotNull(taxiDTOList);
 		assertEquals(2, taxiDTOList.size());
 		verify(taxiRepository).findByPlateContainingIgnoreCase(plate, pageable); // Called once
-		verify(taxiMapper, times(2)).toTaxiDTO(any(Taxi.class));
+		verify(taxiMapper, times(2)).toTaxiDTO(any(TaxiEntity.class));
 	}
 
 	@Test
@@ -82,7 +82,7 @@ public class TaxiServiceTest {
 	public void getTaxisNoPlateTest() {
 
 		when(taxiRepository.findAll(pageable)).thenReturn(taxiPage);
-		when(taxiMapper.toTaxiDTO(any(Taxi.class))).thenReturn(taxi1, taxi2);
+		when(taxiMapper.toTaxiDTO(any(TaxiEntity.class))).thenReturn(taxi1, taxi2);
 
 		// Act
 		List<TaxiDTO> taxiDTOList = taxiService.getTaxis(null, 0, 10);
@@ -94,7 +94,7 @@ public class TaxiServiceTest {
 		assertNotNull(taxiDTOList);
 		assertEquals(2, taxiDTOList.size());
 		verify(taxiRepository).findAll(pageable); // Called once
-		verify(taxiMapper, times(2)).toTaxiDTO(any(Taxi.class));
+		verify(taxiMapper, times(2)).toTaxiDTO(any(TaxiEntity.class));
 	}
 
 	@Test
@@ -102,7 +102,7 @@ public class TaxiServiceTest {
 	public void getTaxisNotFoundTest() {
 
 		String plate = "0000000";
-		Page<Taxi> emptyPage = Page.empty(pageable);
+		Page<TaxiEntity> emptyPage = Page.empty(pageable);
 
 		when(taxiRepository.findByPlateContainingIgnoreCase(plate, pageable)).thenReturn(emptyPage);
 
