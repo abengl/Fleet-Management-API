@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TaxiRepository extends JpaRepository<TaxiEntity, Integer> {
+	@Override
+	boolean existsById(Integer integer);
 
 	Page<TaxiEntity> findByPlateContainingIgnoreCase(String plate, Pageable pageable);
 

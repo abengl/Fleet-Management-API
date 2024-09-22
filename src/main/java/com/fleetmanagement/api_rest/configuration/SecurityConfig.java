@@ -59,8 +59,8 @@ public class SecurityConfig {
 					http.requestMatchers(HttpMethod.GET, "/trajectories/**").hasAuthority("READ");
 					http.requestMatchers(HttpMethod.GET, "/users").hasAuthority("READ");
 					http.requestMatchers(HttpMethod.POST, "/users").hasAuthority("CREATE");
-					http.requestMatchers(HttpMethod.DELETE, "/users").hasAuthority("DELETE");
-					http.requestMatchers(HttpMethod.PATCH, "/users").hasAuthority("UPDATE");
+					http.requestMatchers(HttpMethod.PATCH, "/users/**").hasAuthority("UPDATE");
+					http.requestMatchers(HttpMethod.DELETE, "/users/**").hasAuthority("DELETE");
 
 					http.anyRequest().denyAll();
 				})
