@@ -3,6 +3,9 @@ package com.fleetmanagement.api_rest.business.exception;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -12,6 +15,36 @@ import java.security.InvalidParameterException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+	@ExceptionHandler(InvalidTokenException.class)
+	public ResponseEntity<String> handleInvalidTokenException(InvalidTokenException ex) {
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+	}
+
+
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+
+		String errorMessage =
+				"Missing required parameter. " + ex.getBindingResult().getFieldErrors().get(0).getDefaultMessage();
+		ErrorResponse errorResponse = new ErrorResponse(errorMessage);
+		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+
+	}
+
+	@ExceptionHandler(UsernameNotFoundException.class)
+	public ResponseEntity<ErrorResponse> handleUsernameNotFoundException(UsernameNotFoundException ex) {
+		ErrorResponse errorResponse = new ErrorResponse("The requested user does not exist. " + ex.getMessage()
+		);
+		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+	}
+
+	@ExceptionHandler(BadCredentialsException.class)
+	public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException ex) {
+		ErrorResponse errorResponse = new ErrorResponse("The credential does not match. " + ex.getMessage()
+		);
+		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+	}
 	@ExceptionHandler(NoHandlerFoundException.class)
 	public ResponseEntity<ErrorResponse> handleNotFoundException(NoHandlerFoundException ex) {
 		ErrorResponse errorResponse = new ErrorResponse("The requested endpoint does not exist: " + ex.getRequestURL()

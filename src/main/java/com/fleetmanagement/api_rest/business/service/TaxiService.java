@@ -1,10 +1,10 @@
 package com.fleetmanagement.api_rest.business.service;
 
 import com.fleetmanagement.api_rest.business.exception.ValueNotFoundException;
-import com.fleetmanagement.api_rest.persistence.entity.Taxi;
+import com.fleetmanagement.api_rest.persistence.entity.TaxiEntity;
 import com.fleetmanagement.api_rest.persistence.repository.TaxiRepository;
 import com.fleetmanagement.api_rest.presentation.dto.TaxiDTO;
-import com.fleetmanagement.api_rest.presentation.mapper.TaxiMapper;
+import com.fleetmanagement.api_rest.utils.mapper.TaxiMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,7 +36,7 @@ public class TaxiService {
 		}
 
 		Pageable pageable = PageRequest.of(page, limit);
-		Page<Taxi> taxisPage;
+		Page<TaxiEntity> taxisPage;
 
 		if (plate == null || plate.isEmpty()) {
 			taxisPage = taxiRepository.findAll(pageable);

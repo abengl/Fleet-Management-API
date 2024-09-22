@@ -2,11 +2,14 @@ package com.fleetmanagement.api_rest.business.service;
 
 import com.fleetmanagement.api_rest.business.exception.UserAlreadyExistsException;
 import com.fleetmanagement.api_rest.business.exception.ValueNotFoundException;
-import com.fleetmanagement.api_rest.persistence.entity.User;
+import com.fleetmanagement.api_rest.persistence.entity.RoleEntity;
+import com.fleetmanagement.api_rest.persistence.entity.UserEntity;
+import com.fleetmanagement.api_rest.persistence.repository.RoleRepository;
 import com.fleetmanagement.api_rest.persistence.repository.UserRepository;
 import com.fleetmanagement.api_rest.presentation.dto.UserCreateDTO;
 import com.fleetmanagement.api_rest.presentation.dto.UserResponseDTO;
-import com.fleetmanagement.api_rest.presentation.mapper.UserMapper;
+import com.fleetmanagement.api_rest.utils.PasswordEncoderUtil;
+import com.fleetmanagement.api_rest.utils.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,11 +24,13 @@ import java.util.stream.Collectors;
 public class UserService {
 
 	private final UserRepository userRepository;
+	private final RoleRepository roleRepository;
 	private final UserMapper userMapper;
 
 	@Autowired
-	public UserService(UserRepository userRepository, UserMapper userMapper) {
+	public UserService(UserRepository userRepository, RoleRepository roleRepository, UserMapper userMapper) {
 		this.userRepository = userRepository;
+		this.roleRepository = roleRepository;
 		this.userMapper = userMapper;
 	}
 
@@ -39,7 +44,7 @@ public class UserService {
 		}
 
 		Pageable pageable = PageRequest.of(page, limit);
-		Page<User> usersPage = userRepository.findAll(pageable);
+		Page<UserEntity> usersPage = userRepository.findAll(pageable);
 
 		return usersPage.stream().map(userMapper::toUserResponseDTO).collect(Collectors.toList());
 	}
@@ -58,12 +63,21 @@ public class UserService {
 			throw new UserAlreadyExistsException(userCreateDTO.getEmail());
 		}
 
+		// Encode the password
+		String encodedPassword = PasswordEncoderUtil.encodePassword(userCreateDTO.getPassword());
+		userCreateDTO.setPassword(encodedPassword);
+
+		// Fetch existing role based on RoleEnum
+		RoleEntity role = roleRepository.findByRoleEnum(userCreateDTO.getRole())
+				.orElseThrow(() -> new ValueNotFoundException("Role " + userCreateDTO.getRole() + " doesn't exist."));
+
 		// Map DTO to entity
-		User user = userMapper.toUser(userCreateDTO);
-		User savedUser = userRepository.save(user);
+		UserEntity userEntity = userMapper.toUser(userCreateDTO);
+		userEntity.setRole(role);
+		UserEntity savedUserEntity = userRepository.save(userEntity);
 
 		// Map back to ResponseDTO and return the saved user
-		return userMapper.toUserResponseDTO(savedUser);
+		return userMapper.toUserResponseDTO(savedUserEntity);
 
 	}
 
@@ -81,21 +95,21 @@ public class UserService {
 			throw new InvalidParameterException("Request body is empty.");
 		}
 
-		User user = userRepository.findById(id)
+		UserEntity userEntity = userRepository.findById(id)
 				.orElseThrow(() -> new ValueNotFoundException("User with id " + id + " doesn't exist."));
 
-		user.setName(userCreateDTO.getName());
-
-		return userMapper.toUserResponseDTO(user);
+		userEntity.setName(userCreateDTO.getName());
+		userRepository.save(userEntity);
+		return userMapper.toUserResponseDTO(userEntity);
 	}
 
 	public UserResponseDTO deleteUser(Integer id) {
-		User user = userRepository.findById(id)
+		UserEntity userEntity = userRepository.findById(id)
 				.orElseThrow(() -> new ValueNotFoundException("User with id " + id + " doesn't exist."));
 
-		userRepository.delete(user);
+		userRepository.delete(userEntity);
 
 		// Map back to ResponseDTO and return the saved user
-		return userMapper.toUserResponseDTO(user);
+		return userMapper.toUserResponseDTO(userEntity);
 	}
 }

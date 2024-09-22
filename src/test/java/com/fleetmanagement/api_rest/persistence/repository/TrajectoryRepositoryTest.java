@@ -1,7 +1,7 @@
 package com.fleetmanagement.api_rest.persistence.repository;
 
-import com.fleetmanagement.api_rest.persistence.entity.Taxi;
-import com.fleetmanagement.api_rest.persistence.entity.Trajectory;
+import com.fleetmanagement.api_rest.persistence.entity.TaxiEntity;
+import com.fleetmanagement.api_rest.persistence.entity.TrajectoryEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,13 +40,13 @@ class TrajectoryRepositoryTest {
 	@BeforeEach
 	public void setUp() throws ParseException {
 		// Arrange
-		Taxi taxi1 = Taxi.builder().plate("ABC-123").build();
-		Taxi taxi2 = Taxi.builder().plate("PQR-456").build();
+		TaxiEntity taxiEntity1 = TaxiEntity.builder().plate("ABC-123").build();
+		TaxiEntity taxiEntity2 = TaxiEntity.builder().plate("PQR-456").build();
 
-		taxi1 = taxiRepository.save(taxi1);
-		taxi2 = taxiRepository.save(taxi2);
+		taxiEntity1 = taxiRepository.save(taxiEntity1);
+		taxiEntity2 = taxiRepository.save(taxiEntity2);
 
-		taxiId = taxi1.getId();
+		taxiId = taxiEntity1.getId();
 
 		SimpleDateFormat formatStringToDate = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.ENGLISH);
 
@@ -59,11 +59,15 @@ class TrajectoryRepositoryTest {
 		double longitude = 100.00;
 		double latitude = -100.00;
 
-		List<Trajectory> trajectories = Arrays.asList(
-				Trajectory.builder().taxiId(taxi1).date(date1).latitude(latitude).longitude(longitude).build(),
-				Trajectory.builder().taxiId(taxi2).date(date2).latitude(latitude).longitude(longitude).build(),
-				Trajectory.builder().taxiId(taxi1).date(date3).latitude(latitude).longitude(longitude).build(),
-				Trajectory.builder().taxiId(taxi2).date(date4).latitude(latitude).longitude(longitude).build());
+		List<TrajectoryEntity> trajectories = Arrays.asList(
+				TrajectoryEntity.builder().taxiId(taxiEntity1).date(date1).latitude(latitude).longitude(longitude)
+						.build(),
+				TrajectoryEntity.builder().taxiId(taxiEntity2).date(date2).latitude(latitude).longitude(longitude)
+						.build(),
+				TrajectoryEntity.builder().taxiId(taxiEntity1).date(date3).latitude(latitude).longitude(longitude)
+						.build(),
+				TrajectoryEntity.builder().taxiId(taxiEntity2).date(date4).latitude(latitude).longitude(longitude)
+						.build());
 
 		trajectoryRepository.saveAll(trajectories);
 		System.out.println("Data successfully added:");
@@ -90,7 +94,7 @@ class TrajectoryRepositoryTest {
 		Pageable pageable = PageRequest.of(0, 4);
 
 		// Act
-		Page<Trajectory> trajectoriesPage = trajectoryRepository.findByTaxiId_IdAndDate(taxiId, date, pageable);
+		Page<TrajectoryEntity> trajectoriesPage = trajectoryRepository.findByTaxiId_IdAndDate(taxiId, date, pageable);
 
 		trajectoriesPage.getContent().forEach(System.out::println);
 
@@ -111,7 +115,7 @@ class TrajectoryRepositoryTest {
 		Pageable pageable = PageRequest.of(0, 4);
 
 		// Act
-		Page<Trajectory> trajectoriesPage = trajectoryRepository.findLatestLocations(pageable);
+		Page<TrajectoryEntity> trajectoriesPage = trajectoryRepository.findLatestLocations(pageable);
 
 		trajectoriesPage.getContent().forEach(System.out::println);
 

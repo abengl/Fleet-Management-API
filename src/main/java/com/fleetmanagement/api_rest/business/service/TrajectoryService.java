@@ -2,13 +2,13 @@ package com.fleetmanagement.api_rest.business.service;
 
 import com.fleetmanagement.api_rest.business.exception.InvalidFormatException;
 import com.fleetmanagement.api_rest.business.exception.ValueNotFoundException;
-import com.fleetmanagement.api_rest.persistence.entity.Trajectory;
+import com.fleetmanagement.api_rest.persistence.entity.TrajectoryEntity;
 import com.fleetmanagement.api_rest.persistence.repository.TaxiRepository;
 import com.fleetmanagement.api_rest.persistence.repository.TrajectoryRepository;
 import com.fleetmanagement.api_rest.presentation.dto.LatestTrajectoryDTO;
 import com.fleetmanagement.api_rest.presentation.dto.TrajectoryDTO;
-import com.fleetmanagement.api_rest.presentation.mapper.LatestTrajectoryMapper;
-import com.fleetmanagement.api_rest.presentation.mapper.TrajectoryMapper;
+import com.fleetmanagement.api_rest.utils.mapper.LatestTrajectoryMapper;
+import com.fleetmanagement.api_rest.utils.mapper.TrajectoryMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -62,7 +62,7 @@ public class TrajectoryService {
 		}
 
 		Pageable pageable = PageRequest.of(page, limit);
-		Page<Trajectory> trajectoryPage = trajectoryRepository.findByTaxiId_IdAndDate(taxiId, date, pageable);
+		Page<TrajectoryEntity> trajectoryPage = trajectoryRepository.findByTaxiId_IdAndDate(taxiId, date, pageable);
 
 		return trajectoryPage.stream().map(trajectoryMapper::toTrajectoryDTO).collect(Collectors.toList());
 	}
@@ -70,7 +70,7 @@ public class TrajectoryService {
 	public List<LatestTrajectoryDTO> getLatestTrajectories(int page, int limit) {
 
 		Pageable pageable = PageRequest.of(page, limit);
-		Page<Trajectory> trajectoryPage = trajectoryRepository.findLatestLocations(pageable);
+		Page<TrajectoryEntity> trajectoryPage = trajectoryRepository.findLatestLocations(pageable);
 
 		return trajectoryPage.stream().map(latestTrajectoryMapper::toLatestTrajectoryDTO).collect(Collectors.toList());
 	}

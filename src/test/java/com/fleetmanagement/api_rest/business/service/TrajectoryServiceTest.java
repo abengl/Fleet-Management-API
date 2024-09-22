@@ -3,14 +3,14 @@ package com.fleetmanagement.api_rest.business.service;
 
 import com.fleetmanagement.api_rest.business.exception.InvalidFormatException;
 import com.fleetmanagement.api_rest.business.exception.ValueNotFoundException;
-import com.fleetmanagement.api_rest.persistence.entity.Taxi;
-import com.fleetmanagement.api_rest.persistence.entity.Trajectory;
+import com.fleetmanagement.api_rest.persistence.entity.TaxiEntity;
+import com.fleetmanagement.api_rest.persistence.entity.TrajectoryEntity;
 import com.fleetmanagement.api_rest.persistence.repository.TaxiRepository;
 import com.fleetmanagement.api_rest.persistence.repository.TrajectoryRepository;
 import com.fleetmanagement.api_rest.presentation.dto.LatestTrajectoryDTO;
 import com.fleetmanagement.api_rest.presentation.dto.TrajectoryDTO;
-import com.fleetmanagement.api_rest.presentation.mapper.LatestTrajectoryMapper;
-import com.fleetmanagement.api_rest.presentation.mapper.TrajectoryMapper;
+import com.fleetmanagement.api_rest.utils.mapper.LatestTrajectoryMapper;
+import com.fleetmanagement.api_rest.utils.mapper.TrajectoryMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -120,14 +120,15 @@ class TrajectoryServiceTest {
 		SimpleDateFormat formatStringToDate = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
 		Date date = formatStringToDate.parse(dateString);
 
-		Taxi taxi1 = Taxi.builder().plate("ABC-123").build();
+		TaxiEntity taxiEntity1 = TaxiEntity.builder().plate("ABC-123").build();
 
-		List<Trajectory> trajectories =
+		List<TrajectoryEntity> trajectories =
 				Arrays.asList(
-						Trajectory.builder().taxiId(taxi1).date(date).latitude(latitude).longitude(longitude).build());
+						TrajectoryEntity.builder().taxiId(taxiEntity1).date(date).latitude(latitude)
+								.longitude(longitude).build());
 
 		Pageable pageable = PageRequest.of(page, limit);
-		Page<Trajectory> trajectoriesPage = new PageImpl<>(trajectories, pageable, trajectories.size());
+		Page<TrajectoryEntity> trajectoriesPage = new PageImpl<>(trajectories, pageable, trajectories.size());
 
 		TrajectoryDTO trajectory = TrajectoryDTO.builder()
 				.plate("ABC-123")
@@ -138,7 +139,7 @@ class TrajectoryServiceTest {
 
 		when(taxiRepository.existsById(taxiId)).thenReturn(true);
 		when(trajectoryRepository.findByTaxiId_IdAndDate(taxiId, date, pageable)).thenReturn(trajectoriesPage);
-		when(trajectoryMapper.toTrajectoryDTO(any(Trajectory.class))).thenReturn(trajectory);
+		when(trajectoryMapper.toTrajectoryDTO(any(TrajectoryEntity.class))).thenReturn(trajectory);
 
 		// Act
 		List<TrajectoryDTO> trajectoryDTOList = trajectoryService.getTrajectories(taxiId, dateString, page, limit);
@@ -148,7 +149,7 @@ class TrajectoryServiceTest {
 		assertEquals(1, trajectoryDTOList.size());
 		verify(taxiRepository).existsById(taxiId); // Called once
 		verify(trajectoryRepository).findByTaxiId_IdAndDate(taxiId, date, pageable); // Called wit parameters
-		verify(trajectoryMapper).toTrajectoryDTO(any(Trajectory.class)); // Called once
+		verify(trajectoryMapper).toTrajectoryDTO(any(TrajectoryEntity.class)); // Called once
 	}
 
 
@@ -161,14 +162,15 @@ class TrajectoryServiceTest {
 		SimpleDateFormat formatStringToDate = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
 		Date date = formatStringToDate.parse(dateString);
 
-		Taxi taxi1 = Taxi.builder().plate("ABC-123").build();
+		TaxiEntity taxiEntity1 = TaxiEntity.builder().plate("ABC-123").build();
 
-		List<Trajectory> trajectories =
+		List<TrajectoryEntity> trajectories =
 				Arrays.asList(
-						Trajectory.builder().taxiId(taxi1).date(date).latitude(latitude).longitude(longitude).build());
+						TrajectoryEntity.builder().taxiId(taxiEntity1).date(date).latitude(latitude)
+								.longitude(longitude).build());
 
 		Pageable pageable = PageRequest.of(page, limit);
-		Page<Trajectory> trajectoriesPage = new PageImpl<>(trajectories, pageable, trajectories.size());
+		Page<TrajectoryEntity> trajectoriesPage = new PageImpl<>(trajectories, pageable, trajectories.size());
 
 		LatestTrajectoryDTO latestTrajectory = LatestTrajectoryDTO.builder()
 				.taxiId(taxiId)
@@ -179,7 +181,7 @@ class TrajectoryServiceTest {
 
 		// Mock the repository and mapper
 		when(trajectoryRepository.findLatestLocations(pageable)).thenReturn(trajectoriesPage);
-		when(latestTrajectoryMapper.toLatestTrajectoryDTO(any(Trajectory.class))).thenReturn(
+		when(latestTrajectoryMapper.toLatestTrajectoryDTO(any(TrajectoryEntity.class))).thenReturn(
 				latestTrajectory);
 
 		// Act
@@ -189,7 +191,7 @@ class TrajectoryServiceTest {
 		assertNotNull(latestTrajectoriesDTOList);
 		assertEquals(1, latestTrajectoriesDTOList.size());
 		verify(trajectoryRepository).findLatestLocations(pageable); // Called wit parameters
-		verify(latestTrajectoryMapper).toLatestTrajectoryDTO(any(Trajectory.class)); // Called once
+		verify(latestTrajectoryMapper).toLatestTrajectoryDTO(any(TrajectoryEntity.class)); // Called once
 	}
 }
 
