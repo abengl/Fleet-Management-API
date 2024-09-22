@@ -2,10 +2,13 @@ package com.fleetmanagement.api_rest.business.service;
 
 import com.fleetmanagement.api_rest.business.exception.UserAlreadyExistsException;
 import com.fleetmanagement.api_rest.business.exception.ValueNotFoundException;
+import com.fleetmanagement.api_rest.persistence.entity.RoleEntity;
 import com.fleetmanagement.api_rest.persistence.entity.UserEntity;
+import com.fleetmanagement.api_rest.persistence.repository.RoleRepository;
 import com.fleetmanagement.api_rest.persistence.repository.UserRepository;
 import com.fleetmanagement.api_rest.presentation.dto.UserCreateDTO;
 import com.fleetmanagement.api_rest.presentation.dto.UserResponseDTO;
+import com.fleetmanagement.api_rest.utils.PasswordEncoderUtil;
 import com.fleetmanagement.api_rest.utils.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,11 +24,13 @@ import java.util.stream.Collectors;
 public class UserService {
 
 	private final UserRepository userRepository;
+	private final RoleRepository roleRepository;
 	private final UserMapper userMapper;
 
 	@Autowired
-	public UserService(UserRepository userRepository, UserMapper userMapper) {
+	public UserService(UserRepository userRepository, RoleRepository roleRepository, UserMapper userMapper) {
 		this.userRepository = userRepository;
+		this.roleRepository = roleRepository;
 		this.userMapper = userMapper;
 	}
 
@@ -58,8 +63,17 @@ public class UserService {
 			throw new UserAlreadyExistsException(userCreateDTO.getEmail());
 		}
 
+		// Encode the password
+		String encodedPassword = PasswordEncoderUtil.encodePassword(userCreateDTO.getPassword());
+		userCreateDTO.setPassword(encodedPassword);
+
+		// Fetch existing role based on RoleEnum
+		RoleEntity role = roleRepository.findByRoleEnum(userCreateDTO.getRole())
+				.orElseThrow(() -> new ValueNotFoundException("Role " + userCreateDTO.getRole() + " doesn't exist."));
+
 		// Map DTO to entity
 		UserEntity userEntity = userMapper.toUser(userCreateDTO);
+		userEntity.setRole(role);
 		UserEntity savedUserEntity = userRepository.save(userEntity);
 
 		// Map back to ResponseDTO and return the saved user
@@ -85,7 +99,7 @@ public class UserService {
 				.orElseThrow(() -> new ValueNotFoundException("User with id " + id + " doesn't exist."));
 
 		userEntity.setName(userCreateDTO.getName());
-
+		userRepository.save(userEntity);
 		return userMapper.toUserResponseDTO(userEntity);
 	}
 

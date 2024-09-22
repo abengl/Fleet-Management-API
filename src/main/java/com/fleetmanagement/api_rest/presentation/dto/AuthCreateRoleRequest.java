@@ -1,11 +1,10 @@
 package com.fleetmanagement.api_rest.presentation.dto;
 
-import jakarta.validation.constraints.Size;
+import com.fleetmanagement.api_rest.persistence.entity.RoleEnum;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.validation.annotation.Validated;
-
-import java.util.List;
 
 @Validated
 public record AuthCreateRoleRequest(
-		@Size(max = 3, message = "AuthCreateRoleRequest - The user cannot have more than 3 roles") List<String> roleListName) {
+		@NotBlank(message = "AuthCreateRoleRequest - Role name must not be blank") RoleEnum roleName) {
 }

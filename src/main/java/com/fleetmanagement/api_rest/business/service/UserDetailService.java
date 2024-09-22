@@ -1,6 +1,7 @@
 package com.fleetmanagement.api_rest.business.service;
 
 import com.fleetmanagement.api_rest.persistence.entity.RoleEntity;
+import com.fleetmanagement.api_rest.persistence.entity.RoleEnum;
 import com.fleetmanagement.api_rest.persistence.entity.UserEntity;
 import com.fleetmanagement.api_rest.persistence.repository.RoleRepository;
 import com.fleetmanagement.api_rest.persistence.repository.UserRepository;
@@ -25,8 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class UserDetailService implements UserDetailsService {
@@ -81,11 +81,10 @@ public class UserDetailService implements UserDetailsService {
 
 		List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
 
-		userEntity.getRoles().forEach(
-				role -> authorityList.add(new SimpleGrantedAuthority("ROLE_".concat(role.getRoleEnum().name()))));
+		authorityList.add(new SimpleGrantedAuthority("ROLE_".concat(userEntity.getRole().getRoleEnum().name())));
 
-		userEntity.getRoles().stream().flatMap(role -> role.getPermissionList().stream())
-				.forEach(permission -> authorityList.add(new SimpleGrantedAuthority(permission.getName())));
+		userEntity.getRole().getPermissionList().forEach(
+				permission -> authorityList.add(new SimpleGrantedAuthority(permission.getName())));
 
 		return new User(userEntity.getEmail(), userEntity.getPassword(), userEntity.isEnabled(),
 				userEntity.isAccountNonExpired(), userEntity.isCredentialsNonExpired(),
@@ -98,13 +97,11 @@ public class UserDetailService implements UserDetailsService {
 		String name = createRoleRequest.name();
 		String email = createRoleRequest.email();
 		String password = createRoleRequest.password();
-		List<String> rolesRequest = createRoleRequest.roleRequest().roleListName();
+		RoleEnum roleName = createRoleRequest.roleRequest().roleName();
 
-		Set<RoleEntity>
-				roleEntityList =
-				roleRepository.findRoleEntitiesByRoleEnumIn(rolesRequest).stream().collect(Collectors.toSet());
+		Optional<RoleEntity> roleEntity = roleRepository.findByRoleEnum(roleName);
 
-		if (roleEntityList.isEmpty()) {
+		if (roleEntity.isEmpty()) {
 			throw new IllegalArgumentException("The roles specified does not exist.");
 		}
 
@@ -113,7 +110,7 @@ public class UserDetailService implements UserDetailsService {
 				.name(name)
 				.email(email)
 				.password(passwordEncoder.encode(password))
-				.roles(roleEntityList)
+				.role(roleEntity.orElse(null))
 				.isEnabled(true)
 				.accountNonLocked(true)
 				.accountNonExpired(true)
@@ -123,11 +120,11 @@ public class UserDetailService implements UserDetailsService {
 
 		ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
-		userSaved.getRoles().forEach(
+		roleEntity.ifPresent(
 				role -> authorities.add(new SimpleGrantedAuthority("ROLE_".concat(role.getRoleEnum().name()))));
 
-		userSaved.getRoles().stream().flatMap(role -> role.getPermissionList().stream())
-				.forEach(permission -> authorities.add(new SimpleGrantedAuthority(permission.getName())));
+		roleEntity.ifPresent(role -> role.getPermissionList().forEach(permission ->
+				authorities.add(new SimpleGrantedAuthority(permission.getName()))));
 
 		SecurityContext securityContextHolder = SecurityContextHolder.getContext();
 

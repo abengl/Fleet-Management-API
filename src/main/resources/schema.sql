@@ -19,19 +19,6 @@ CREATE TABLE IF NOT EXISTS api.trajectories
         REFERENCES api.taxis (id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS api.users
-(
-    id                      integer                NOT NULL GENERATED ALWAYS AS IDENTITY,
-    name                    character varying(255) NOT NULL,
-    email                   character varying(255) NOT NULL,
-    password                character varying(255) NOT NULL,
-    is_enabled              boolean                NOT NULL,
-    account_non_expired     boolean                NOT NULL,
-    account_non_locked      boolean                NOT NULL,
-    credentials_non_expired boolean                NOT NULL,
-    CONSTRAINT users_pkey PRIMARY KEY (id)
-);
-
 CREATE TABLE IF NOT EXISTS api.roles
 (
     id        integer                NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -45,16 +32,33 @@ CREATE TABLE IF NOT EXISTS api.permissions
     name character varying(255) NOT NULL UNIQUE
 );
 
-CREATE TABLE IF NOT EXISTS api.user_roles
+CREATE TABLE IF NOT EXISTS api.users
 (
-    user_id integer NOT NULL,
+    id                      integer                NOT NULL GENERATED ALWAYS AS IDENTITY,
+    name                    character varying(255) NOT NULL,
+    email                   character varying(255) NOT NULL,
+    password                character varying(255) NOT NULL,
+    is_enabled              boolean                NOT NULL,
+    account_non_expired     boolean                NOT NULL,
+    account_non_locked      boolean                NOT NULL,
+    credentials_non_expired boolean                NOT NULL,
+--     CONSTRAINT users_pkey PRIMARY KEY (id)
     role_id integer NOT NULL,
-    CONSTRAINT user_roles_pkey PRIMARY KEY (user_id, role_id),
-    CONSTRAINT user_roles_user_id_fkey FOREIGN KEY (user_id)
-        REFERENCES api.users (id) ON DELETE CASCADE,
-    CONSTRAINT user_roles_role_id_fkey FOREIGN KEY (role_id)
+    CONSTRAINT users_pkey PRIMARY KEY (id),
+    CONSTRAINT users_role_id_fkey FOREIGN KEY (role_id)
         REFERENCES api.roles (id) ON DELETE CASCADE
 );
+
+-- CREATE TABLE IF NOT EXISTS api.user_roles
+-- (
+--     user_id integer NOT NULL,
+--     role_id integer NOT NULL,
+--     CONSTRAINT user_roles_pkey PRIMARY KEY (user_id, role_id),
+--     CONSTRAINT user_roles_user_id_fkey FOREIGN KEY (user_id)
+--         REFERENCES api.users (id) ON DELETE CASCADE,
+--     CONSTRAINT user_roles_role_id_fkey FOREIGN KEY (role_id)
+--         REFERENCES api.roles (id) ON DELETE CASCADE
+-- );
 
 CREATE TABLE IF NOT EXISTS api.role_permissions
 (

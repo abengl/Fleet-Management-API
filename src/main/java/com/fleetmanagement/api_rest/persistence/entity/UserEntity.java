@@ -6,9 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Data
 @Builder
 @AllArgsConstructor
@@ -42,8 +39,6 @@ public class UserEntity {
 	@Column(name = "credentials_non_Expired")
 	private boolean credentialsNonExpired;
 
-	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinTable(name = "user_roles", schema = "api", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns =
-	@JoinColumn(name = "role_id"))
-	private Set<RoleEntity> roles = new HashSet<>();
-}
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinColumn(name = "role_id")
+	private RoleEntity role;
