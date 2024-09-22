@@ -42,3 +42,4 @@ public class UserEntity {
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "role_id")
 	private RoleEntity role;
+}
