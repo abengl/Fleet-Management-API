@@ -24,7 +24,7 @@ public class DataLoader {
 	@PostConstruct
 	public void loadData() throws IOException {
 		for (int i = 1; i <= 12; i++) {
-			Resource resource = resourceLoader.getResource("classpath:data" + i + ".sql");
+			Resource resource = resourceLoader.getResource("classpath:data/data" + i + ".sql");
 			if (resource.exists()) {
 				try (Stream<String> stream = Files.lines(Paths.get(resource.getURI()))) {
 					String sql = stream.reduce("", (acc, line) -> acc + line + "\n");
