@@ -54,8 +54,7 @@ public class UserDetailService implements UserDetailsService {
 	}
 
 	public Authentication authenticate(String email, String password) {
-		System.out.println("UserDetailService -> authenticate -> email " + email);
-		System.out.println("UserDetailService -> authenticate -> password " + password);
+		System.out.println("UserDetailService -> authenticate -> email " + email + " password " + password);
 		UserDetails userDetails = this.loadUserByUsername(email);
 
 		if (!passwordEncoder.matches(password, userDetails.getPassword())) {

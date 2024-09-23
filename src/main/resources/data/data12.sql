@@ -61,82 +61,80 @@ SELECT 'guest',
 FROM api.roles r
 WHERE r.role_name = 'GUEST';
 
--- INSERT INTO api.users (name, email, password, is_enabled, account_non_expired, account_non_locked,
---                        credentials_non_expired, role_id)
--- SELECT 'sofia',
---        'sofia@mail.com',
---        '$2a$10$cMY29RPYoIHMJSuwRfoD3eQxU1J5Rww4VnNOUOAEPqCBshkNfrEf6',
---        true,
---        true,
---        true,
---        true,
---        r.id
--- FROM api.roles r
--- WHERE r.role_name = 'ADMIN';
+INSERT INTO api.users (name, email, password, is_enabled, account_non_expired, account_non_locked,
+                       credentials_non_expired, role_id)
+SELECT 'sofia',
+       'sofia@mail.com',
+       '$2a$10$cMY29RPYoIHMJSuwRfoD3eQxU1J5Rww4VnNOUOAEPqCBshkNfrEf6',
+       true,
+       true,
+       true,
+       true,
+       r.id
+FROM api.roles r
+WHERE r.role_name = 'ADMIN';
 
--- INSERT INTO api.users (name, email, password, is_enabled, account_non_expired, account_non_locked,
---                        credentials_non_expired, role_id)
--- SELECT 'alice',
---        'alice@mail.com',
---        '$2a$10$cMY29RPYoIHMJSuwRfoD3eQxU1J5Rww4VnNOUOAEPqCBshkNfrEf6',
---        true,
---        true,
---        true,
---        true,
---        r.id
--- FROM api.roles r
--- WHERE r.role_name = 'USER';
---
--- INSERT INTO api.users (name, email, password, is_enabled, account_non_expired, account_non_locked,
---                        credentials_non_expired, role_id)
--- SELECT 'bob',
---        'bob@mail.com',
---        '$2a$10$cMY29RPYoIHMJSuwRfoD3eQxU1J5Rww4VnNOUOAEPqCBshkNfrEf6',
---        true,
---        true,
---        true,
---        true,
---        r.id
--- FROM api.roles r
--- WHERE r.role_name = 'USER';
---
--- INSERT INTO api.users (name, email, password, is_enabled, account_non_expired, account_non_locked,
---                        credentials_non_expired, role_id)
--- SELECT 'andrea',
---        'andrea@mail.com',
---        '$2a$10$cMY29RPYoIHMJSuwRfoD3eQxU1J5Rww4VnNOUOAEPqCBshkNfrEf6',
---        true,
---        true,
---        true,
---        true,
---        r.id
--- FROM api.roles r
--- WHERE r.role_name = 'INVITED';
---
--- INSERT INTO api.users (name, email, password, is_enabled, account_non_expired, account_non_locked,
---                        credentials_non_expired, role_id)
--- SELECT 'jane',
---        'jane@mail.com',
---        '$2a$10$cMY29RPYoIHMJSuwRfoD3eQxU1J5Rww4VnNOUOAEPqCBshkNfrEf6',
---        true,
---        true,
---        true,
---        true,
---        r.id
--- FROM api.roles r
--- WHERE r.role_name = 'INVITED';
---
---
---
--- INSERT INTO api.users (name, email, password, is_enabled, account_non_expired, account_non_locked,
---                        credentials_non_expired, role_id)
--- SELECT 'mateo',
---        'mateo@mail.com',
---        '$2a$10$cMY29RPYoIHMJSuwRfoD3eQxU1J5Rww4VnNOUOAEPqCBshkNfrEf6',
---        true,
---        true,
---        true,
---        true,
---        r.id
--- FROM api.roles r
--- WHERE r.role_name = 'DEVELOPER';
+INSERT INTO api.users (name, email, password, is_enabled, account_non_expired, account_non_locked,
+                       credentials_non_expired, role_id)
+SELECT 'alice',
+       'alice@mail.com',
+       '$2a$10$cMY29RPYoIHMJSuwRfoD3eQxU1J5Rww4VnNOUOAEPqCBshkNfrEf6',
+       true,
+       true,
+       true,
+       true,
+       r.id
+FROM api.roles r
+WHERE r.role_name = 'USER';
+
+INSERT INTO api.users (name, email, password, is_enabled, account_non_expired, account_non_locked,
+                       credentials_non_expired, role_id)
+SELECT 'bob',
+       'bob@mail.com',
+       '$2a$10$cMY29RPYoIHMJSuwRfoD3eQxU1J5Rww4VnNOUOAEPqCBshkNfrEf6',
+       true,
+       true,
+       true,
+       true,
+       r.id
+FROM api.roles r
+WHERE r.role_name = 'USER';
+
+INSERT INTO api.users (name, email, password, is_enabled, account_non_expired, account_non_locked,
+                       credentials_non_expired, role_id)
+SELECT 'andrea',
+       'andrea@mail.com',
+       '$2a$10$cMY29RPYoIHMJSuwRfoD3eQxU1J5Rww4VnNOUOAEPqCBshkNfrEf6',
+       true,
+       true,
+       true,
+       true,
+       r.id
+FROM api.roles r
+WHERE r.role_name = 'GUEST';
+
+INSERT INTO api.users (name, email, password, is_enabled, account_non_expired, account_non_locked,
+                       credentials_non_expired, role_id)
+SELECT 'jane',
+       'jane@mail.com',
+       '$2a$10$cMY29RPYoIHMJSuwRfoD3eQxU1J5Rww4VnNOUOAEPqCBshkNfrEf6',
+       true,
+       true,
+       true,
+       true,
+       r.id
+FROM api.roles r
+WHERE r.role_name = 'GUEST';
+
+INSERT INTO api.users (name, email, password, is_enabled, account_non_expired, account_non_locked,
+                       credentials_non_expired, role_id)
+SELECT 'mateo',
+       'mateo@mail.com',
+       '$2a$10$cMY29RPYoIHMJSuwRfoD3eQxU1J5Rww4VnNOUOAEPqCBshkNfrEf6',
+       true,
+       true,
+       true,
+       true,
+       r.id
+FROM api.roles r
+WHERE r.role_name = 'DEVELOPER';

@@ -67,7 +67,7 @@ public class JwtUtils {
 	 */
 	public String createToken(Authentication authentication) {
 
-		System.out.println("JwtUtils -> createToken -> authentication ->");
+		System.out.println("JwtUtils -> createToken -> authentication");
 		Algorithm algorithm = Algorithm.HMAC256(this.privateKey);
 
 		String username = authentication.getPrincipal().toString();
@@ -76,21 +76,20 @@ public class JwtUtils {
 				.stream()
 				.map(GrantedAuthority::getAuthority)
 				.collect(Collectors.joining(","));
-		System.out.println("JwtUtils -> createToken -> authorities -> " + authorities);
 
 		// Create the JWT token with claims and sign
 		String jwtToken = JWT.create()
 				.withIssuer(this.userGenerator)
 				.withSubject(username) // Set the subject (username) of the token
 				.withClaim("authorities", authorities) // Add authorities as a custom claim
-				.withIssuedAt(new Date()) // Set the token issuance time
+				.withIssuedAt(new Date(System.currentTimeMillis())) // Set the token issuance time
 				.withExpiresAt(new Date(
-						System.currentTimeMillis() + 1800000)) // Set the token expiration time (30 minutes from now)
+						System.currentTimeMillis() + Long.parseLong(
+								timeExpiration))) // Set the token expiration time (30 minutes
+				// from now)
 				.withJWTId(UUID.randomUUID().toString()) // Set a unique identifier for the token
-				.withNotBefore(new Date(System.currentTimeMillis())) // Set the time before which the token is not
-				// valid
+				.withNotBefore(new Date(System.currentTimeMillis())) // Set the time before which the token is invalid
 				.sign(algorithm); // Sign the token with the algorithm
-		// Return the generated JWT token
 		return jwtToken;
 	}
 
@@ -106,7 +105,7 @@ public class JwtUtils {
 	 */
 	public DecodedJWT validateToken(String token) {
 
-		System.out.println("JwtUtils -> validateToken -> ");
+		System.out.println("JwtUtils -> validateToken ");
 
 		try {
 			Algorithm algorithm = Algorithm.HMAC256(this.privateKey);

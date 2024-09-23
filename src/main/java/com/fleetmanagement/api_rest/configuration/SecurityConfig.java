@@ -49,6 +49,16 @@ public class SecurityConfig {
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(http -> {
 					http.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
+					http.requestMatchers(HttpMethod.GET, "/taxis/**").hasAnyRole("ADMIN", "DEVELOPER", "USER",
+							"GUEST");
+					http.requestMatchers(HttpMethod.GET, "/trajectories").hasAnyRole("ADMIN", "DEVELOPER", "USER");
+					http.requestMatchers(HttpMethod.GET, "/trajectories/latest")
+							.hasAnyRole("ADMIN", "DEVELOPER", "USER");
+					http.requestMatchers(HttpMethod.GET, "/users").hasAnyRole("ADMIN", "DEVELOPER");
+					http.requestMatchers(HttpMethod.POST, "/users").hasAnyRole("ADMIN", "DEVELOPER");
+					http.requestMatchers(HttpMethod.PATCH, "/users/**").hasAnyRole("ADMIN", "DEVELOPER");
+					http.requestMatchers(HttpMethod.DELETE, "/users/**").hasAnyRole("ADMIN");
+
 					http.anyRequest().authenticated();
 				})
 				// Custom JWT filter to validate the token before the BasicAuthenticationFilter
