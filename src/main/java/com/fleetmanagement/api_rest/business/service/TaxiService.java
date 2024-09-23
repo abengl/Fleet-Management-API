@@ -15,6 +15,9 @@ import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for managing Taxi entities.
+ */
 @Service
 public class TaxiService {
 
@@ -27,6 +30,16 @@ public class TaxiService {
 		this.taxiMapper = taxiMapper;
 	}
 
+	/**
+	 * Retrieves a paginated list of TaxiDTOs, optionally filtered by plate.
+	 *
+	 * @param plate the plate to filter by (optional)
+	 * @param page  the page number to retrieve
+	 * @param limit the number of items per page
+	 * @return a list of TaxiDTOs
+	 * @throws InvalidParameterException if page is negative or limit is non-positive
+	 * @throws ValueNotFoundException    if no taxis are found with the specified plate
+	 */
 	public List<TaxiDTO> getTaxis(String plate, int page, int limit) {
 		if (page < 0) {
 			throw new InvalidParameterException("Page number cannot be negative");
@@ -48,6 +61,5 @@ public class TaxiService {
 		}
 
 		return taxisPage.stream().map(taxiMapper::toTaxiDTO).collect(Collectors.toList());
-
 	}
 }

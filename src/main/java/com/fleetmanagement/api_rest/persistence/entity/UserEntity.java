@@ -6,6 +6,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Entity representing a user in the system.
+ * This entity is mapped to the 'users' table in the 'api' schema.
+ * It contains information about the user such as their ID, name, email, password, and account status.
+ */
 @Data
 @Builder
 @AllArgsConstructor

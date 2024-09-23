@@ -1,4 +1,4 @@
-package com.fleetmanagement.api_rest.utils;
+package com.fleetmanagement.api_rest.configuration.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -16,36 +16,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
- * Utility class for handling JSON Web Tokens (JWT) in the application.
- * This class provides methods for creating, validating, and extracting information from JWT tokens.
- * It uses the HMAC256 algorithm for signing the tokens and includes user details and authorities in the token claims.
- *
- * <p>Configuration properties used by this class:
- * <ul>
- *   <li><code>security.jwt.key.private</code>: The private key used for signing the JWT tokens.</li>
- *   <li><code>security.jwt.user.generator</code>: The user or entity that issues the JWT tokens.</li>
- * </ul>
- *
- * <p>Example usage:
- * <pre>
- * {@code
- * JwtUtils jwtUtils = new JwtUtils();
- * String token = jwtUtils.createToken(authentication);
- * DecodedJWT decodedJWT = jwtUtils.validateToken(token);
- * String username = jwtUtils.extractUsername(decodedJWT);
- * Claim claim = jwtUtils.getSpecificClaim(decodedJWT, "claimName");
- * }
- * </pre>
- *
- * <p>This class is managed by the Spring IoC container as a Spring bean.
- *
- * @see com.auth0.jwt.JWT
- * @see com.auth0.jwt.algorithms.Algorithm
- * @see com.auth0.jwt.interfaces.DecodedJWT
- * @see org.springframework.security.core.Authentication
- * @see org.springframework.security.core.GrantedAuthority
+ * Utility class for handling JSON Web Tokens (JWT).
+ * Provides methods for creating, validating, and extracting information from JWT tokens.
  */
-
 @Component
 public class JwtUtils {
 
@@ -56,11 +29,8 @@ public class JwtUtils {
 	@Value("${jwt.expiration.time}")
 	private String timeExpiration;
 
-
 	/**
 	 * Generates a JWT token for the authenticated user.
-	 * This token is used for securing API endpoints by ensuring that the user is authenticated and authorized.
-	 * The token includes user details and authorities, and it is signed using a private key.
 	 *
 	 * @param authentication the authentication object containing user details
 	 * @return a signed JWT token as a String
@@ -72,59 +42,63 @@ public class JwtUtils {
 
 		String username = authentication.getPrincipal().toString();
 
-		String authorities = authentication.getAuthorities()
-				.stream()
-				.map(GrantedAuthority::getAuthority)
+		String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
 				.collect(Collectors.joining(","));
 
-		String jwtToken = JWT.create()
-				.withIssuer(this.userGenerator)
-				.withSubject(username)
-				.withClaim("authorities", authorities)
-				.withIssuedAt(new Date(System.currentTimeMillis()))
-				.withExpiresAt(new Date(
-						System.currentTimeMillis() + Long.parseLong(
-								timeExpiration)))
-				.withJWTId(UUID.randomUUID().toString())
-				.withNotBefore(new Date(System.currentTimeMillis()))
-				.sign(algorithm);
+		String jwtToken =
+				JWT.create().withIssuer(this.userGenerator).withSubject(username).withClaim("authorities", authorities)
+						.withIssuedAt(new Date(System.currentTimeMillis()))
+						.withExpiresAt(new Date(System.currentTimeMillis() + Long.parseLong(timeExpiration)))
+						.withJWTId(UUID.randomUUID().toString()).withNotBefore(new Date(System.currentTimeMillis()))
+						.sign(algorithm);
 		return jwtToken;
 	}
 
 	/**
 	 * Validates a JWT token.
-	 * This method verifies the provided JWT token using the configured private key and issuer.
-	 * If the token is valid, it returns the decoded JWT object.
-	 * If the token is invalid, it throws a RuntimeException.
 	 *
 	 * @param token the JWT token to be validated
 	 * @return the decoded JWT object if the token is valid
-	 * @throws RuntimeException if the token is invalid
+	 * @throws InvalidTokenException if the token is invalid
 	 */
 	public DecodedJWT validateToken(String token) {
 
 		System.out.println("JwtUtils -> validateToken ");
 
 		try {
+
+			System.out.println("JwtUtils -> validateToken -> try ");
 			Algorithm algorithm = Algorithm.HMAC256(this.privateKey);
 
-			DecodedJWT decodedJWT = JWT.require(algorithm)
-					.withIssuer(this.userGenerator)
-					.build()
-					.verify(token);
+			DecodedJWT decodedJWT = JWT.require(algorithm).withIssuer(this.userGenerator).build().verify(token);
 			return decodedJWT;
-		} catch (JWTDecodeException e) {
-			throw new InvalidTokenException("Invalid token format.");
-		} catch (TokenExpiredException e) {
-			throw new InvalidTokenException("Token has expired.");
-		} catch (SignatureVerificationException e) {
-			throw new InvalidTokenException("Invalid token signature.");
-		} catch (AlgorithmMismatchException e) {
-			throw new InvalidTokenException("Algorithm mismatch.");
-		} catch (JWTVerificationException e) {
-			throw new InvalidTokenException("Token verification failed.");
-		}
 
+		} catch (JWTDecodeException e) {
+
+			System.out.println("JwtUtils -> validateToken -> catch JWTDecodeException ");
+			throw new InvalidTokenException("Invalid token format.");
+
+		} catch (TokenExpiredException e) {
+
+			System.out.println("JwtUtils -> validateToken -> catch TokenExpiredException ");
+			throw new InvalidTokenException("Token has expired.");
+
+		} catch (SignatureVerificationException e) {
+
+			System.out.println("JwtUtils -> validateToken -> catch SignatureVerificationException ");
+			throw new InvalidTokenException("Invalid token signature.");
+
+		} catch (AlgorithmMismatchException e) {
+
+			System.out.println("JwtUtils -> validateToken -> catch AlgorithmMismatchException ");
+			throw new InvalidTokenException("Algorithm mismatch.");
+
+		} catch (JWTVerificationException e) {
+
+			System.out.println("JwtUtils -> validateToken -> catch JWTVerificationException ");
+			throw new InvalidTokenException("Token verification failed.");
+
+		}
 	}
 
 	/**
@@ -136,7 +110,7 @@ public class JwtUtils {
 	public String extractUsername(DecodedJWT decodedJWT) {
 
 		System.out.println("JwtUtils -> extractUsername ->  ");
-		return decodedJWT.getSubject().toString();
+		return decodedJWT.getSubject();
 	}
 
 	/**

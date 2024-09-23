@@ -6,6 +6,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
+/**
+ * Entity representing a role in the system.
+ * This entity is mapped to the 'roles' table in the 'api' schema.
+ * It contains information about the role such as its ID and name.
+ */
 @Data
 @Builder
 @AllArgsConstructor

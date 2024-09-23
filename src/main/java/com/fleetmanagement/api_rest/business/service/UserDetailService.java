@@ -1,12 +1,11 @@
 package com.fleetmanagement.api_rest.business.service;
 
+import com.fleetmanagement.api_rest.configuration.security.JwtUtils;
 import com.fleetmanagement.api_rest.persistence.entity.UserEntity;
-import com.fleetmanagement.api_rest.persistence.repository.RoleRepository;
 import com.fleetmanagement.api_rest.persistence.repository.UserRepository;
 import com.fleetmanagement.api_rest.presentation.dto.AuthLoginRequest;
 import com.fleetmanagement.api_rest.presentation.dto.AuthResponse;
 import com.fleetmanagement.api_rest.presentation.dto.UserDTO;
-import com.fleetmanagement.api_rest.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,6 +22,9 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Service class for handling user authentication and user details retrieval.
+ */
 @Service
 public class UserDetailService implements UserDetailsService {
 
@@ -32,9 +34,13 @@ public class UserDetailService implements UserDetailsService {
 	private JwtUtils jwtUtils;
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	@Autowired
-	private RoleRepository roleRepository;
 
+	/**
+	 * Authenticates a user and generates a JWT token.
+	 *
+	 * @param authLoginRequest the login request containing email and password
+	 * @return AuthResponse containing the JWT token and user details
+	 */
 	public AuthResponse loginUser(AuthLoginRequest authLoginRequest) {
 		System.out.println("UserDetailService -> loginUser -> authLoginRequest " + authLoginRequest);
 		String email = authLoginRequest.email();
@@ -53,6 +59,14 @@ public class UserDetailService implements UserDetailsService {
 		return authResponse;
 	}
 
+	/**
+	 * Authenticates a user based on email and password.
+	 *
+	 * @param email    the user's email
+	 * @param password the user's password
+	 * @return Authentication object if authentication is successful
+	 * @throws BadCredentialsException if the password is incorrect
+	 */
 	public Authentication authenticate(String email, String password) {
 		System.out.println("UserDetailService -> authenticate -> email " + email + " password " + password);
 		UserDetails userDetails = this.loadUserByUsername(email);
@@ -67,6 +81,13 @@ public class UserDetailService implements UserDetailsService {
 		return new UsernamePasswordAuthenticationToken(userEntity, null, userDetails.getAuthorities());
 	}
 
+	/**
+	 * Loads a user by their email.
+	 *
+	 * @param email the user's email
+	 * @return UserDetails object containing user information
+	 * @throws UsernameNotFoundException if the user is not found
+	 */
 	@Override
 	public UserDetails loadUserByUsername(String email) {
 		System.out.println("UserDetailService -> loadUserByUsername -> email " + email);

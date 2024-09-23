@@ -7,6 +7,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+
+/**
+ * Entity representing a trajectory in the system.
+ * This entity is mapped to the 'trajectories' table in the 'api' schema.
+ * It contains information about the trajectory such as its ID, associated taxi, date, latitude, and longitude.
+ */
 @Data
 @Builder
 @AllArgsConstructor

@@ -12,6 +12,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
+/**
+ * Component that loads SQL data files into the database at application startup.
+ */
 @Component
 public class DataLoader {
 
@@ -21,6 +24,11 @@ public class DataLoader {
 	@Autowired
 	private ResourceLoader resourceLoader;
 
+	/**
+	 * Loads SQL data files from the classpath into the database.
+	 *
+	 * @throws IOException if an I/O error occurs reading the files
+	 */
 	@PostConstruct
 	public void loadData() throws IOException {
 		for (int i = 1; i <= 12; i++) {

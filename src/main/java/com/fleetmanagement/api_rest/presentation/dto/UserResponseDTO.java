@@ -5,6 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Data Transfer Object (DTO) for user responses.
+ * This class contains information about the user's ID, name, and email.
+ */
 @Data
 @Builder
 @AllArgsConstructor

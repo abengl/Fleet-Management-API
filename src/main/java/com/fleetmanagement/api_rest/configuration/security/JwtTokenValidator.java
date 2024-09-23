@@ -1,9 +1,8 @@
-package com.fleetmanagement.api_rest.configuration.filter;
+package com.fleetmanagement.api_rest.configuration.security;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fleetmanagement.api_rest.business.exception.InvalidTokenException;
-import com.fleetmanagement.api_rest.utils.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,7 +32,7 @@ import java.util.Map;
 public class JwtTokenValidator extends OncePerRequestFilter {
 
 	private final List<String> excludedPaths = List.of("/auth/login", "/auth/**");
-	private JwtUtils jwtUtils;
+	private final JwtUtils jwtUtils;
 
 	public JwtTokenValidator(JwtUtils jwtUtils) {
 		this.jwtUtils = jwtUtils;
@@ -48,7 +47,7 @@ public class JwtTokenValidator extends OncePerRequestFilter {
 	 */
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) {
-		System.out.println("shouldNotFilter -> " + request);
+		System.out.println("JwtTokenValidator -> shouldNotFilter ");
 		String path = request.getRequestURI();
 		return excludedPaths.stream().anyMatch(path::startsWith);
 	}
@@ -66,16 +65,16 @@ public class JwtTokenValidator extends OncePerRequestFilter {
 	 * @throws IOException      if an I/O error occurs during the filtering process
 	 */
 	@Override
-	protected void doFilterInternal(
-			@NonNull HttpServletRequest request,
-			@NonNull HttpServletResponse response,
-			@NonNull FilterChain filterChain) throws ServletException, IOException {
+	protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
+									@NonNull FilterChain filterChain) throws ServletException, IOException {
 
-		System.out.println("JwtTokenValidator -> doFilterInternal -> ");
+		System.out.println("JwtTokenValidator -> doFilterInternal ");
 
 		String jwtToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 
 		if (jwtToken == null || !jwtToken.startsWith("Bearer ")) {
+
+			System.out.println("JwtTokenValidator -> doFilterInternal -> if jwtToken == null ");
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			Map<String, String> errorResponse = new HashMap<>();
 			errorResponse.put("error", "No token provided.");
@@ -85,6 +84,8 @@ public class JwtTokenValidator extends OncePerRequestFilter {
 		}
 
 		try {
+
+			System.out.println("JwtTokenValidator -> doFilterInternal -> try ");
 			jwtToken = jwtToken.substring(7);
 
 			DecodedJWT decodedJWT = jwtUtils.validateToken(jwtToken);
@@ -106,14 +107,13 @@ public class JwtTokenValidator extends OncePerRequestFilter {
 
 			filterChain.doFilter(request, response);
 		} catch (InvalidTokenException e) {
-			System.out.println("JwtTokenValidator -> doFilterInternal -> InvalidTokenException");
+			System.out.println("JwtTokenValidator -> doFilterInternal -> catch InvalidTokenException");
 
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			Map<String, String> errorResponse = new HashMap<>();
 			errorResponse.put("error", e.getMessage());
 			response.getWriter().write(new ObjectMapper().writeValueAsString(errorResponse));
 			response.getWriter().flush();
-			return;
 		}
 	}
 }

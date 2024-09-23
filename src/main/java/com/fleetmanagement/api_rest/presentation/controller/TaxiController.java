@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * Controller for handling taxi-related requests.
+ */
 @RestController
 @RequestMapping("/taxis")
 public class TaxiController {
@@ -22,6 +25,14 @@ public class TaxiController {
 		this.taxiService = taxiService;
 	}
 
+	/**
+	 * Retrieves a list of taxis based on the provided plate number, page, and limit.
+	 *
+	 * @param plate the plate number of the taxi (optional)
+	 * @param page  the page number for pagination (default is 0)
+	 * @param limit the maximum number of results per page (default is 10)
+	 * @return a ResponseEntity containing a list of TaxiDTO objects
+	 */
 	@GetMapping
 	public ResponseEntity<List<TaxiDTO>> getAllTaxisByPlate(
 			@RequestParam(name = "plate", required = false) String plate,

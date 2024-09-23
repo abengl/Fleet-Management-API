@@ -13,6 +13,10 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.security.InvalidParameterException;
 
+/**
+ * Global exception handler for the Fleet Management API.
+ * This class handles various exceptions and provides appropriate HTTP responses.
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -34,21 +38,20 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(UsernameNotFoundException.class)
 	public ResponseEntity<ErrorResponse> handleUsernameNotFoundException(UsernameNotFoundException ex) {
-		ErrorResponse errorResponse = new ErrorResponse("The requested user does not exist. " + ex.getMessage()
-		);
+		ErrorResponse errorResponse = new ErrorResponse("The requested user does not exist. " + ex.getMessage());
 		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(BadCredentialsException.class)
 	public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException ex) {
-		ErrorResponse errorResponse = new ErrorResponse("The credential does not match. " + ex.getMessage()
-		);
+		ErrorResponse errorResponse = new ErrorResponse("The credential does not match. " + ex.getMessage());
 		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
 	}
+
 	@ExceptionHandler(NoHandlerFoundException.class)
 	public ResponseEntity<ErrorResponse> handleNotFoundException(NoHandlerFoundException ex) {
-		ErrorResponse errorResponse = new ErrorResponse("The requested endpoint does not exist: " + ex.getRequestURL()
-		);
+		ErrorResponse errorResponse =
+				new ErrorResponse("The requested endpoint does not exist: " + ex.getRequestURL());
 		return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
 	}
 
@@ -65,6 +68,7 @@ public class GlobalExceptionHandler {
 		ErrorResponse errorResponse = new ErrorResponse("Invalid format. " + ex.getMessage());
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
+
 	@ExceptionHandler(UserAlreadyExistsException.class)
 	@ResponseBody
 	public ResponseEntity<ErrorResponse> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
@@ -74,9 +78,11 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(TypeMismatchException.class)
 	public ResponseEntity<ErrorResponse> handleTypeMismatchException(TypeMismatchException ex) {
-		ErrorResponse errorResponse = new ErrorResponse("Invalid parameter. Page and limit must be valid integers");
+		ErrorResponse errorResponse =
+				new ErrorResponse("Invalid parameter. Page and limit must be valid integers. " + ex.getMessage());
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
+
 	@ExceptionHandler(InvalidParameterException.class)
 	public ResponseEntity<ErrorResponse> handleInvalidParameterException(InvalidParameterException ex) {
 		ErrorResponse errorResponse = new ErrorResponse("Invalid parameter." + ex.getMessage());

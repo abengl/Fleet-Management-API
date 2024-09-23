@@ -1,3 +1,11 @@
+-- This script initializes the database schema for the fleet management application.
+-- It creates the following tables within the 'api' schema:
+-- 1. taxis: Stores information about taxis, including their ID and plate number.
+-- 2. trajectories: Stores trajectory data for taxis, including timestamps, latitude, and longitude.
+-- 3. roles: Stores user roles with unique role names.
+-- 4. users: Stores user information, including name, email, password, and role associations.
+
+CREATE SCHEMA IF NOT EXISTS api;
 CREATE SCHEMA IF NOT EXISTS api;
 
 CREATE TABLE IF NOT EXISTS api.taxis
@@ -41,5 +49,3 @@ CREATE TABLE IF NOT EXISTS api.users
     CONSTRAINT users_role_id_fkey FOREIGN KEY (role_id)
         REFERENCES api.roles (id)
 );
-
-

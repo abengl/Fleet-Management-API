@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Controller for handling authentication-related requests.
+ */
 @RestController
 @RequestMapping("/auth")
 public class AuthenticationController {
@@ -18,6 +21,12 @@ public class AuthenticationController {
 	@Autowired
 	private UserDetailService userDetailService;
 
+	/**
+	 * Authenticates a user based on the provided login request.
+	 *
+	 * @param userRequest the login request containing user credentials
+	 * @return a response entity containing the authentication response
+	 */
 	@PostMapping("/login")
 	public ResponseEntity<AuthResponse> login(@RequestBody @Valid AuthLoginRequest userRequest) {
 		System.out.println("AuthenticationController -> login -> userRequest ");
