@@ -14,9 +14,9 @@ public class UserCreateDTO {
 	private String name;
 	private String email;
 	private String password;
-	private boolean isEnabled = true;
-	private boolean accountNonExpired = true;
-	private boolean accountNonLocked = true;
-	private boolean credentialsNonExpired = true;
+	private final boolean isEnabled = true;
+	private final boolean accountNonExpired = true;
+	private final boolean accountNonLocked = true;
+	private final boolean credentialsNonExpired = true;
 	private RoleEnum role;
 }

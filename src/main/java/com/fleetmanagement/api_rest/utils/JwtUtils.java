@@ -46,14 +46,16 @@ import java.util.stream.Collectors;
  * @see org.springframework.security.core.GrantedAuthority
  */
 
-@Component // define a Spring bean that will be managed by the Spring IoC container
+@Component
 public class JwtUtils {
-	// injects the sha256 generated key to sign the JWT token
-	@Value("${security.jwt.key.private}")
+
+	@Value("${jwt.key.private}")
 	private String privateKey;
-	// injects the user that issues the key
-	@Value("${security.jwt.user.generator}")
+	@Value("${jwt.user.generator}")
 	private String userGenerator;
+	@Value("${jwt.expiration.time}")
+	private String timeExpiration;
+
 
 	/**
 	 * Generates a JWT token for the authenticated user.
@@ -65,25 +67,20 @@ public class JwtUtils {
 	 */
 	public String createToken(Authentication authentication) {
 
-		System.out.println("JwtUtils -> createToken -> authentication ->" + authentication);
-		// Create an HMAC256 algorithm instance using the private key
+		System.out.println("JwtUtils -> createToken -> authentication ->");
 		Algorithm algorithm = Algorithm.HMAC256(this.privateKey);
-		System.out.println("JwtUtils -> createToken -> algorithm ->" + algorithm);
 
-		// Extract the username from the authentication object
 		String username = authentication.getPrincipal().toString();
-		System.out.println("JwtUtils -> createToken -> username ->" + username);
 
-		// Extract and join the authorities (roles/permissions) from the authentication object
 		String authorities = authentication.getAuthorities()
 				.stream()
 				.map(GrantedAuthority::getAuthority)
 				.collect(Collectors.joining(","));
 		System.out.println("JwtUtils -> createToken -> authorities -> " + authorities);
 
-		// Create the JWT token with various claims and sign it with the algorithm
+		// Create the JWT token with claims and sign
 		String jwtToken = JWT.create()
-				.withIssuer(this.userGenerator) // Set the issuer of the token
+				.withIssuer(this.userGenerator)
 				.withSubject(username) // Set the subject (username) of the token
 				.withClaim("authorities", authorities) // Add authorities as a custom claim
 				.withIssuedAt(new Date()) // Set the token issuance time
