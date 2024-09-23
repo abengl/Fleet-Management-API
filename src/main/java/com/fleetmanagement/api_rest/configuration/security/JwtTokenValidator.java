@@ -1,9 +1,8 @@
-package com.fleetmanagement.api_rest.configuration.filter;
+package com.fleetmanagement.api_rest.configuration.security;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fleetmanagement.api_rest.business.exception.InvalidTokenException;
-import com.fleetmanagement.api_rest.utils.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,8 +32,7 @@ import java.util.Map;
 public class JwtTokenValidator extends OncePerRequestFilter {
 
 	private final List<String> excludedPaths = List.of("/auth/login", "/auth/**");
-			// public paths to exclude from token validation
-	private JwtUtils jwtUtils; // utility class for JWT operations
+	private final JwtUtils jwtUtils;
 
 	public JwtTokenValidator(JwtUtils jwtUtils) {
 		this.jwtUtils = jwtUtils;
@@ -49,9 +47,9 @@ public class JwtTokenValidator extends OncePerRequestFilter {
 	 */
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) {
-		System.out.println("shouldNotFilter -> " + request);
-		String path = request.getRequestURI(); // retrieves the uri
-		return excludedPaths.stream().anyMatch(path::startsWith); // checks if the uri is in the excluded paths
+		System.out.println("JwtTokenValidator -> shouldNotFilter ");
+		String path = request.getRequestURI();
+		return excludedPaths.stream().anyMatch(path::startsWith);
 	}
 
 	/**
@@ -67,18 +65,16 @@ public class JwtTokenValidator extends OncePerRequestFilter {
 	 * @throws IOException      if an I/O error occurs during the filtering process
 	 */
 	@Override
-	protected void doFilterInternal(
-			@NonNull HttpServletRequest request,
-			@NonNull HttpServletResponse response,
-			@NonNull FilterChain filterChain) throws ServletException, IOException {
+	protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
+									@NonNull FilterChain filterChain) throws ServletException, IOException {
 
-		System.out.println("JwtTokenValidator -> doFilterInternal -> ");
+		System.out.println("JwtTokenValidator -> doFilterInternal ");
 
-		// Retrieve the Authorization header from the HTTP request
 		String jwtToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-		// Check if the token is missing or does not start with "Bearer "
 		if (jwtToken == null || !jwtToken.startsWith("Bearer ")) {
+
+			System.out.println("JwtTokenValidator -> doFilterInternal -> if jwtToken == null ");
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			Map<String, String> errorResponse = new HashMap<>();
 			errorResponse.put("error", "No token provided.");
@@ -88,42 +84,36 @@ public class JwtTokenValidator extends OncePerRequestFilter {
 		}
 
 		try {
-			// Remove the "Bearer " prefix from the token
+
+			System.out.println("JwtTokenValidator -> doFilterInternal -> try ");
 			jwtToken = jwtToken.substring(7);
 
-			// Validate the token and decode it
 			DecodedJWT decodedJWT = jwtUtils.validateToken(jwtToken);
 			System.out.println("JwtTokenValidator -> doFilterInternal -> decoded jwt -> " + decodedJWT);
 
-			// Extract the username from the decoded token
 			String username = jwtUtils.extractUsername(decodedJWT);
 			System.out.println("JwtTokenValidator -> doFilterInternal -> username -> " + username);
 
-			// Extract the authorities (roles/permissions) from the decoded token
 			String stringAuthorities = jwtUtils.getSpecificClaim(decodedJWT, "authorities").asString();
 
-			// Convert the authorities from a comma-separated string to a collection of GrantedAuthority objects
 			Collection<? extends GrantedAuthority> authorities =
 					AuthorityUtils.commaSeparatedStringToAuthorityList(stringAuthorities);
 			System.out.println("JwtTokenValidator -> doFilterInternal -> authorities -> " + authorities);
 
-			// Create a new SecurityContext and set the authentication information
 			SecurityContext context = SecurityContextHolder.createEmptyContext();
 			Authentication authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
 			context.setAuthentication(authenticationToken);
 			SecurityContextHolder.setContext(context);
 
-			// Continue the filter chain if the token is valid
 			filterChain.doFilter(request, response);
 		} catch (InvalidTokenException e) {
-			System.out.println("JwtTokenValidator -> doFilterInternal -> InvalidTokenException");
+			System.out.println("JwtTokenValidator -> doFilterInternal -> catch InvalidTokenException");
 
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			Map<String, String> errorResponse = new HashMap<>();
 			errorResponse.put("error", e.getMessage());
 			response.getWriter().write(new ObjectMapper().writeValueAsString(errorResponse));
 			response.getWriter().flush();
-			return;
 		}
 	}
 }

@@ -5,12 +5,26 @@ import com.fleetmanagement.api_rest.presentation.dto.UserCreateDTO;
 import com.fleetmanagement.api_rest.presentation.dto.UserResponseDTO;
 import org.mapstruct.Mapper;
 
+/**
+ * Mapper interface for converting between UserEntity and User DTOs.
+ * Utilizes MapStruct for automatic mapping.
+ */
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-	// Map from User entity to UserResponseDTO for output
+	/**
+	 * Converts a UserEntity to a UserResponseDTO.
+	 *
+	 * @param userEntity the UserEntity to convert
+	 * @return the converted UserResponseDTO
+	 */
 	UserResponseDTO toUserResponseDTO(UserEntity userEntity);
 
-	// Map from UserCreateDTO to User entity for input
+	/**
+	 * Converts a UserCreateDTO to a UserEntity.
+	 *
+	 * @param userCreateDTO the UserCreateDTO to convert
+	 * @return the converted UserEntity
+	 */
 	UserEntity toUser(UserCreateDTO userCreateDTO);
 }

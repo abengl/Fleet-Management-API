@@ -23,6 +23,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for managing Trajectory entities.
+ */
 @Service
 public class TrajectoryService {
 	private final TrajectoryRepository trajectoryRepository;
@@ -39,6 +42,18 @@ public class TrajectoryService {
 		this.latestTrajectoryMapper = latestTrajectoryMapper;
 	}
 
+	/**
+	 * Retrieves a paginated list of TrajectoryDTOs for a specific taxi and date.
+	 *
+	 * @param taxiId     the ID of the taxi
+	 * @param dateString the date in "dd-MM-yyyy" format
+	 * @param page       the page number to retrieve
+	 * @param limit      the number of items per page
+	 * @return a list of TrajectoryDTOs
+	 * @throws InvalidParameterException if taxiId or dateString is missing, or if page or limit is invalid
+	 * @throws ValueNotFoundException    if the taxi ID is not found
+	 * @throws InvalidFormatException    if the date format is incorrect
+	 */
 	public List<TrajectoryDTO> getTrajectories(Integer taxiId, String dateString, int page, int limit) {
 
 		if (taxiId == null) {
@@ -67,6 +82,13 @@ public class TrajectoryService {
 		return trajectoryPage.stream().map(trajectoryMapper::toTrajectoryDTO).collect(Collectors.toList());
 	}
 
+	/**
+	 * Retrieves a paginated list of the latest TrajectoryDTOs.
+	 *
+	 * @param page  the page number to retrieve
+	 * @param limit the number of items per page
+	 * @return a list of LatestTrajectoryDTOs
+	 */
 	public List<LatestTrajectoryDTO> getLatestTrajectories(int page, int limit) {
 
 		Pageable pageable = PageRequest.of(page, limit);

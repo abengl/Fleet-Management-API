@@ -1,3 +1,11 @@
+-- This script initializes the database schema for the fleet management application.
+-- It creates the following tables within the 'api' schema:
+-- 1. taxis: Stores information about taxis, including their ID and plate number.
+-- 2. trajectories: Stores trajectory data for taxis, including timestamps, latitude, and longitude.
+-- 3. roles: Stores user roles with unique role names.
+-- 4. users: Stores user information, including name, email, password, and role associations.
+
+CREATE SCHEMA IF NOT EXISTS api;
 CREATE SCHEMA IF NOT EXISTS api;
 
 CREATE TABLE IF NOT EXISTS api.taxis
@@ -26,12 +34,6 @@ CREATE TABLE IF NOT EXISTS api.roles
     CONSTRAINT role_name_unique UNIQUE (role_name)
 );
 
-CREATE TABLE IF NOT EXISTS api.permissions
-(
-    id   integer                NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name character varying(255) NOT NULL UNIQUE
-);
-
 CREATE TABLE IF NOT EXISTS api.users
 (
     id                      integer                NOT NULL GENERATED ALWAYS AS IDENTITY,
@@ -42,31 +44,8 @@ CREATE TABLE IF NOT EXISTS api.users
     account_non_expired     boolean                NOT NULL,
     account_non_locked      boolean                NOT NULL,
     credentials_non_expired boolean                NOT NULL,
---     CONSTRAINT users_pkey PRIMARY KEY (id)
     role_id integer NOT NULL,
     CONSTRAINT users_pkey PRIMARY KEY (id),
     CONSTRAINT users_role_id_fkey FOREIGN KEY (role_id)
-        REFERENCES api.roles (id) ON DELETE CASCADE
-);
-
--- CREATE TABLE IF NOT EXISTS api.user_roles
--- (
---     user_id integer NOT NULL,
---     role_id integer NOT NULL,
---     CONSTRAINT user_roles_pkey PRIMARY KEY (user_id, role_id),
---     CONSTRAINT user_roles_user_id_fkey FOREIGN KEY (user_id)
---         REFERENCES api.users (id) ON DELETE CASCADE,
---     CONSTRAINT user_roles_role_id_fkey FOREIGN KEY (role_id)
---         REFERENCES api.roles (id) ON DELETE CASCADE
--- );
-
-CREATE TABLE IF NOT EXISTS api.role_permissions
-(
-    role_id       integer NOT NULL,
-    permission_id integer NOT NULL,
-    PRIMARY KEY (role_id, permission_id),
-    CONSTRAINT role_permissions_role_id_fkey FOREIGN KEY (role_id)
-        REFERENCES api.roles (id) ON DELETE CASCADE,
-    CONSTRAINT role_permissions_permission_id_fkey FOREIGN KEY (permission_id)
-        REFERENCES api.permissions (id) ON DELETE CASCADE
+        REFERENCES api.roles (id)
 );

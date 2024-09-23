@@ -5,6 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Data Transfer Object (DTO) representing the latest trajectory of a taxi.
+ * This class contains information about the taxi's ID, plate number, date, and its last known coordinates.
+ */
 @Data
 @Builder
 @AllArgsConstructor

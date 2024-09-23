@@ -6,6 +6,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Data Transfer Object (DTO) for creating a new user.
+ * This class contains information about the user's name, email, password, and role.
+ * It also includes flags for account status.
+ */
 @Data
 @Builder
 @AllArgsConstructor
@@ -14,9 +19,9 @@ public class UserCreateDTO {
 	private String name;
 	private String email;
 	private String password;
-	private boolean isEnabled = true;
-	private boolean accountNonExpired = true;
-	private boolean accountNonLocked = true;
-	private boolean credentialsNonExpired = true;
+	private final boolean isEnabled = true;
+	private final boolean accountNonExpired = true;
+	private final boolean accountNonLocked = true;
+	private final boolean credentialsNonExpired = true;
 	private RoleEnum role;
 }

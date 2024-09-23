@@ -8,16 +8,21 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.Statement;
 
+/**
+ * Configuration class that handles database cleanup on application shutdown.
+ */
 @Configuration
 public class ShutdownConfig {
 
 	@Autowired
 	private DataSource dataSource;
 
+	/**
+	 * Cleans up the database by dropping specified tables before the application shuts down.
+	 */
 	@PreDestroy
 	public void onShutdown() {
-		try (Connection connection = dataSource.getConnection();
-			 Statement statement = connection.createStatement()) {
+		try (Connection connection = dataSource.getConnection(); Statement statement = connection.createStatement()) {
 			statement.execute("DROP TABLE IF EXISTS api.trajectories CASCADE");
 			statement.execute("DROP TABLE IF EXISTS api.taxis CASCADE");
 			statement.execute("DROP TABLE IF EXISTS api.users CASCADE");

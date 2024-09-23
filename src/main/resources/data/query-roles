@@ -1,17 +1,9 @@
 SELECT
     u.name,
-    r.role_name AS role_name,
-    p.name AS permission_name
+    r.role_name AS role_name
 FROM
     api.users u
-        INNER JOIN
-    api.user_roles ur ON u.id = ur.user_id
-        INNER JOIN
-    api.roles r ON ur.role_id = r.id
-        INNER JOIN
-    api.role_permissions rp ON r.id = rp.role_id
-        INNER JOIN
-    api.permissions p ON rp.permission_id = p.id
-
+INNER JOIN
+    api.roles r ON u.role_id = r.id
 WHERE
 	u.name = 'admin';

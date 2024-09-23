@@ -6,9 +6,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
-import java.util.Set;
 
+/**
+ * Entity representing a role in the system.
+ * This entity is mapped to the 'roles' table in the 'api' schema.
+ * It contains information about the role such as its ID and name.
+ */
 @Data
 @Builder
 @AllArgsConstructor
@@ -24,10 +27,5 @@ public class RoleEntity {
 	@Column(name = "role_name")
 	@Enumerated(EnumType.STRING)
 	private RoleEnum roleEnum;
-
-	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinTable(name = "role_permissions", schema = "api", joinColumns = @JoinColumn(name = "role_id"),
-			inverseJoinColumns = @JoinColumn(name = "permission_id"))
-	private Set<PermissionEntity> permissionList = new HashSet<>();
 
 }
