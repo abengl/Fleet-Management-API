@@ -24,8 +24,8 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
  * This class configures the security filter chain, authentication manager,
  * authentication provider, and password encoder.
  */
-@Configuration // indicates that the class can be used by the Spring IoC container as a source of bean definitions
-@EnableWebSecurity // Spring Security framework, enables and configures web security
+@Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
 	@Autowired
@@ -45,28 +45,14 @@ public class SecurityConfig {
 
 		System.out.println("SecurityConfig -> SecurityFilterChain -> httpSecurity ");
 		return httpSecurity
-				// Disable Cross-Site Request Forgery (CSRF) protection
 				.csrf(csrf -> csrf.disable())
-				//stateless session the server will not store any session information
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				// Authorization rules
 				.authorizeHttpRequests(http -> {
-					// Public EndPoints
-					http.requestMatchers(HttpMethod.POST, "/auth/login").permitAll();
-
-					// Private EndPoints
-					http.requestMatchers(HttpMethod.GET, "/taxis").hasAuthority("READ");
-					http.requestMatchers(HttpMethod.GET, "/trajectories/**").hasAuthority("READ");
-					http.requestMatchers(HttpMethod.GET, "/users").hasAuthority("READ");
-					http.requestMatchers(HttpMethod.POST, "/users").hasAuthority("CREATE");
-					http.requestMatchers(HttpMethod.PATCH, "/users/**").hasAuthority("UPDATE");
-					http.requestMatchers(HttpMethod.DELETE, "/users/**").hasAuthority("DELETE");
-
-					http.anyRequest().denyAll();
+					http.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
+					http.anyRequest().authenticated();
 				})
 				// Custom JWT filter to validate the token before the BasicAuthenticationFilter
 				.addFilterBefore(new JwtTokenValidator(jwtUtils), BasicAuthenticationFilter.class)
-				// Builds the security configuration
 				.build();
 	}
 

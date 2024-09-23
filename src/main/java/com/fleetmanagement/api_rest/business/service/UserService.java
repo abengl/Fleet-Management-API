@@ -8,12 +8,12 @@ import com.fleetmanagement.api_rest.persistence.repository.RoleRepository;
 import com.fleetmanagement.api_rest.persistence.repository.UserRepository;
 import com.fleetmanagement.api_rest.presentation.dto.UserCreateDTO;
 import com.fleetmanagement.api_rest.presentation.dto.UserResponseDTO;
-import com.fleetmanagement.api_rest.utils.PasswordEncoderUtil;
 import com.fleetmanagement.api_rest.utils.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.InvalidParameterException;
@@ -26,12 +26,15 @@ public class UserService {
 	private final UserRepository userRepository;
 	private final RoleRepository roleRepository;
 	private final UserMapper userMapper;
+	private final PasswordEncoder passwordEncoder;
 
 	@Autowired
-	public UserService(UserRepository userRepository, RoleRepository roleRepository, UserMapper userMapper) {
+	public UserService(UserRepository userRepository, RoleRepository roleRepository, UserMapper userMapper,
+					   PasswordEncoder passwordEncoder) {
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
 		this.userMapper = userMapper;
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	public List<UserResponseDTO> getAllUsers(int page, int limit) {
@@ -64,7 +67,7 @@ public class UserService {
 		}
 
 		// Encode the password
-		String encodedPassword = PasswordEncoderUtil.encodePassword(userCreateDTO.getPassword());
+		String encodedPassword = passwordEncoder.encode(userCreateDTO.getPassword());
 		userCreateDTO.setPassword(encodedPassword);
 
 		// Fetch existing role based on RoleEnum
