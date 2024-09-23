@@ -83,9 +83,6 @@ public class UserDetailService implements UserDetailsService {
 
 		authorityList.add(new SimpleGrantedAuthority("ROLE_".concat(userEntity.getRole().getRoleEnum().name())));
 
-		userEntity.getRole().getPermissionList().forEach(
-				permission -> authorityList.add(new SimpleGrantedAuthority(permission.getName())));
-
 		return new User(userEntity.getEmail(), userEntity.getPassword(), userEntity.isEnabled(),
 				userEntity.isAccountNonExpired(), userEntity.isCredentialsNonExpired(),
 				userEntity.isAccountNonLocked(),
@@ -122,9 +119,6 @@ public class UserDetailService implements UserDetailsService {
 
 		roleEntity.ifPresent(
 				role -> authorities.add(new SimpleGrantedAuthority("ROLE_".concat(role.getRoleEnum().name()))));
-
-		roleEntity.ifPresent(role -> role.getPermissionList().forEach(permission ->
-				authorities.add(new SimpleGrantedAuthority(permission.getName()))));
 
 		SecurityContext securityContextHolder = SecurityContextHolder.getContext();
 
