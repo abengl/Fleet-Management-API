@@ -1,11 +1,8 @@
 package com.fleetmanagement.api_rest.business.service;
 
-import com.fleetmanagement.api_rest.persistence.entity.RoleEntity;
-import com.fleetmanagement.api_rest.persistence.entity.RoleEnum;
 import com.fleetmanagement.api_rest.persistence.entity.UserEntity;
 import com.fleetmanagement.api_rest.persistence.repository.RoleRepository;
 import com.fleetmanagement.api_rest.persistence.repository.UserRepository;
-import com.fleetmanagement.api_rest.presentation.dto.AuthCreateUserRequest;
 import com.fleetmanagement.api_rest.presentation.dto.AuthLoginRequest;
 import com.fleetmanagement.api_rest.presentation.dto.AuthResponse;
 import com.fleetmanagement.api_rest.presentation.dto.UserDTO;
@@ -15,7 +12,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserDetailService implements UserDetailsService {
@@ -89,47 +84,4 @@ public class UserDetailService implements UserDetailsService {
 				authorityList);
 	}
 
-	public AuthResponse createUser(AuthCreateUserRequest createRoleRequest) {
-
-		String name = createRoleRequest.name();
-		String email = createRoleRequest.email();
-		String password = createRoleRequest.password();
-		RoleEnum roleName = createRoleRequest.roleRequest().roleName();
-
-		Optional<RoleEntity> roleEntity = roleRepository.findByRoleEnum(roleName);
-
-		if (roleEntity.isEmpty()) {
-			throw new IllegalArgumentException("The roles specified does not exist.");
-		}
-
-		// 1st parameter .username(username)
-		UserEntity userEntity = UserEntity.builder()
-				.name(name)
-				.email(email)
-				.password(passwordEncoder.encode(password))
-				.role(roleEntity.orElse(null))
-				.isEnabled(true)
-				.accountNonLocked(true)
-				.accountNonExpired(true)
-				.credentialsNonExpired(true).build();
-
-		UserEntity userSaved = userRepository.save(userEntity);
-
-		ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<>();
-
-		roleEntity.ifPresent(
-				role -> authorities.add(new SimpleGrantedAuthority("ROLE_".concat(role.getRoleEnum().name()))));
-
-		SecurityContext securityContextHolder = SecurityContextHolder.getContext();
-
-		Authentication authentication = new UsernamePasswordAuthenticationToken(userSaved, null, authorities);
-
-		String accessToken = jwtUtils.createToken(authentication);
-
-		UserDTO userDTO = new UserDTO(userEntity.getId(), userEntity.getEmail());
-
-		AuthResponse authResponse = new AuthResponse(accessToken, userDTO);
-
-		return authResponse;
-	}
 }
