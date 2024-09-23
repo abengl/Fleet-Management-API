@@ -61,7 +61,6 @@ public class SecurityConfig {
 
 					http.anyRequest().authenticated();
 				})
-				// Custom JWT filter to validate the token before the BasicAuthenticationFilter
 				.addFilterBefore(new JwtTokenValidator(jwtUtils), BasicAuthenticationFilter.class)
 				.build();
 	}

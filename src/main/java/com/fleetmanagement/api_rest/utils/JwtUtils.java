@@ -77,19 +77,17 @@ public class JwtUtils {
 				.map(GrantedAuthority::getAuthority)
 				.collect(Collectors.joining(","));
 
-		// Create the JWT token with claims and sign
 		String jwtToken = JWT.create()
 				.withIssuer(this.userGenerator)
-				.withSubject(username) // Set the subject (username) of the token
-				.withClaim("authorities", authorities) // Add authorities as a custom claim
-				.withIssuedAt(new Date(System.currentTimeMillis())) // Set the token issuance time
+				.withSubject(username)
+				.withClaim("authorities", authorities)
+				.withIssuedAt(new Date(System.currentTimeMillis()))
 				.withExpiresAt(new Date(
 						System.currentTimeMillis() + Long.parseLong(
-								timeExpiration))) // Set the token expiration time (30 minutes
-				// from now)
-				.withJWTId(UUID.randomUUID().toString()) // Set a unique identifier for the token
-				.withNotBefore(new Date(System.currentTimeMillis())) // Set the time before which the token is invalid
-				.sign(algorithm); // Sign the token with the algorithm
+								timeExpiration)))
+				.withJWTId(UUID.randomUUID().toString())
+				.withNotBefore(new Date(System.currentTimeMillis()))
+				.sign(algorithm);
 		return jwtToken;
 	}
 
