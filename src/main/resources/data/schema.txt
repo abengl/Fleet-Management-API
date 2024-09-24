@@ -6,7 +6,6 @@
 -- 4. users: Stores user information, including name, email, password, and role associations.
 
 CREATE SCHEMA IF NOT EXISTS api;
-CREATE SCHEMA IF NOT EXISTS api;
 
 CREATE TABLE IF NOT EXISTS api.taxis
 (

@@ -49,7 +49,7 @@ public class SecurityConfig {
 					http.requestMatchers(HttpMethod.GET, "/users").hasAnyRole("ADMIN", "DEVELOPER");
 					http.requestMatchers(HttpMethod.POST, "/users").hasAnyRole("ADMIN", "DEVELOPER");
 					http.requestMatchers(HttpMethod.PATCH, "/users/**").hasAnyRole("ADMIN", "DEVELOPER");
-					http.requestMatchers(HttpMethod.DELETE, "/users/**").hasAnyRole("ADMIN");
+					http.requestMatchers(HttpMethod.DELETE, "/users/**").hasAnyRole("ADMIN", "DEVELOPER");
 
 					http.anyRequest().authenticated();
 				}).addFilterBefore(new JwtTokenValidator(jwtUtils), BasicAuthenticationFilter.class).build();
