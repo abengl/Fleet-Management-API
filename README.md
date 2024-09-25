@@ -60,8 +60,7 @@ mvn test
 ---
 
 ## Future Development
-- Adding user authentication and role-based access control.
-- Increasing test coverage.
-- Implementing a more complex reporting system for taxi trajectories.
+- Optimized Response Times via indexing database.
+- Increase data source for the API.
 
 ---
