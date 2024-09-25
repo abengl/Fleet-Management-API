@@ -1,6 +1,9 @@
 package com.fleetmanagement.api_rest.persistence.repository;
 
-import com.fleetmanagement.api_rest.persistence.entity.User;
+import com.fleetmanagement.api_rest.business.exception.ValueNotFoundException;
+import com.fleetmanagement.api_rest.persistence.entity.RoleEntity;
+import com.fleetmanagement.api_rest.persistence.entity.RoleEnum;
+import com.fleetmanagement.api_rest.persistence.entity.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,16 +14,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@Transactional
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class UserRepositoryTest {
@@ -28,18 +27,30 @@ class UserRepositoryTest {
 	@Autowired
 	private UserRepository userRepository;
 
-	@BeforeEach
-	void setUp() {
-		List<User> users = Arrays.asList(
-				User.builder().name("User 1").email("user1@example.com").password("password123").build(),
-				User.builder().name("User 2").email("user2@example.com").password("password123").build(),
-				User.builder().name("User 3").email("user3@example.com").password("password123").build(),
-				User.builder().name("User 4").email("user4@example.com").password("password123").build()
-		);
+	@Autowired
+	private RoleRepository roleRepository;
 
-		userRepository.saveAll(users);
-		System.out.println("Data successfully added:");
+	private UserEntity newUserEntity;
+
+	@BeforeEach
+	public void setUp() {
+		String encodedPassword = "$2a$12$6ET83xFaVLihfB4fTrzX.eznPIIvPeWluqf7G/v0eXTuYaQNrhRne";
+
+		RoleEntity role = roleRepository.findByRoleEnum(RoleEnum.USER)
+				.orElseThrow(() -> new ValueNotFoundException("Role doesn't exist."));
+
+		newUserEntity =
+				UserEntity.builder().name("user").email("user@example.com").password(encodedPassword).isEnabled(true)
+						.accountNonExpired(true).accountNonLocked(true).accountNonExpired(true).build();
+		newUserEntity.setRole(role);
+		userRepository.save(newUserEntity);
+	}
+
+	@Test
+	@DisplayName("Verify User Data")
+	public void verifyTestData() {
 		userRepository.findAll().forEach(System.out::println);
+		assertThat(userRepository.findAll()).hasSize(2);
 	}
 
 	@Test
@@ -47,61 +58,47 @@ class UserRepositoryTest {
 	public void findAllTest() {
 		// Act
 		Pageable pageable = PageRequest.of(0, 5);
-		Page<User> userPage = userRepository.findAll(pageable);
-
-		System.out.println("T1 - User page:");
-		userPage.getContent().forEach(System.out::println);
+		Page<UserEntity> userPage = userRepository.findAll(pageable);
 
 		// Assert
 		assertThat(userPage).isNotNull();
 		assertThat(userPage.getTotalPages()).as("Total pages should be 1").isEqualTo(1);
-		assertThat(userPage.getTotalElements()).as("Total elements should be 4").isEqualTo(4);
-		assertThat(userPage.getContent().get(0).getName()).as("The first name should be User 1")
-				.isEqualTo("User 1");
+		assertThat(userPage.getTotalElements()).as("Total elements should be 1").isEqualTo(2);
+		assertThat(userPage.getContent().get(0).getName()).as("The first name should be admin").isEqualTo("admin");
 	}
 
 	@Test
 	@DisplayName("Testing method existsUserByEmail() - It should return boolean")
 	void existsUserByEmailTest() {
 		// Act
-		boolean expected1 = userRepository.existsUserByEmail("user3@example.com");
+		boolean expected1 = userRepository.existsUserByEmail("admin@test.com");
 		boolean expected2 = userRepository.existsUserByEmail("user000@example.com");
 
 		// Assert
-		assertThat(expected1).as("User with email user3@example.com exists.").isTrue();
+		assertThat(expected1).as("User with email admin@test.com exists.").isTrue();
 		assertThat(expected2).as("User with email user000@example.com doesn't exist.").isFalse();
 	}
 
 	@Test
 	@DisplayName("Testing method save() - It should return boolean")
 	void saveTest() {
-		User newUser = User.builder().name("User 5").email("user5@example.com").password("password123").build();
 
 		// Act
-		User expected = userRepository.save(newUser);
-
-		System.out.println("T3 - New user added");
-		System.out.println(newUser);
+		UserEntity expected = userRepository.save(newUserEntity);
 
 		// Assert
-		assertThat(expected.getName()).as("New user name should be User 5").isEqualTo("User 5");
-		assertThat(userRepository.existsUserByEmail("user5@example.com")).as("New user exists in the database")
+		assertThat(expected.getName()).as("New user name should be user").isEqualTo("user");
+		assertThat(userRepository.existsUserByEmail("user@example.com")).as("New user exists in the database")
 				.isTrue();
-		assertThat(userRepository.count()).as("User count should be 5 after saving a new user").isEqualTo(5);
 	}
 
 	@Test
 	@DisplayName("Testing method findById() - It should return the entity")
 	void findByIdTest() {
-		User newUser = User.builder().name("User 5").email("user5@example.com").password("password123").build();
-		userRepository.save(newUser);
-
-		System.out.println("T4 - New user added");
-		System.out.println(newUser);
 
 		// Act
-		Optional<User> expected1 = userRepository.findById(newUser.getId());
-		Optional<User> expected2 = userRepository.findById(100);
+		Optional<UserEntity> expected1 = userRepository.findById(newUserEntity.getId());
+		Optional<UserEntity> expected2 = userRepository.findById(100);
 
 		// Assert
 		assertThat(expected1).as("User should be retrievable by ID").isPresent();
@@ -111,19 +108,14 @@ class UserRepositoryTest {
 	@Test
 	@DisplayName("Testing method delete() - It deletes the entity without return value")
 	void deleteTest() {
-		User newUser = User.builder().name("User 5").email("user5@example.com").password("password123").build();
-		userRepository.save(newUser);
-
-		System.out.println("T5 - New user added");
-		System.out.println(newUser);
 
 		// Act
-		userRepository.delete(newUser);
-		Optional<User> expected1 = userRepository.findById(newUser.getId());
+		userRepository.delete(newUserEntity);
+		Optional<UserEntity> expected1 = userRepository.findById(newUserEntity.getId());
 
 		// Assert
 		assertThat(expected1).as("User should be empty").isEmpty();
-		assertThat(userRepository.count()).as("User count should be 4 after deleting the user").isEqualTo(4);
+		assertThat(userRepository.count()).as("User count should be 1 after deleting the user").isEqualTo(1);
 	}
 
 }

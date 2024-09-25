@@ -8,13 +8,18 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
-@Entity
-@Table(name = "trajectories", schema = "api")
+/**
+ * Entity representing a trajectory in the system.
+ * This entity is mapped to the 'trajectories' table in the 'api' schema.
+ * It contains information about the trajectory such as its ID, associated taxi, date, latitude, and longitude.
+ */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Trajectory {
+@Entity
+@Table(name = "trajectories", schema = "api")
+public class TrajectoryEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +27,7 @@ public class Trajectory {
 
 	@ManyToOne
 	@JoinColumn(name = "taxi_id", referencedColumnName = "id", nullable = false)
-	private Taxi taxiId;
+	private TaxiEntity taxiId;
 
 	@Column(name = "date")
 	private Date date;

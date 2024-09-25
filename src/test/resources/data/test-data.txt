@@ -1,0 +1,41 @@
+INSERT INTO api.taxis (id, plate)
+VALUES (6418, 'CNBC-2997')
+ON CONFLICT (id) DO NOTHING;
+INSERT INTO api.taxis (id, plate)
+VALUES (6598, 'PBOC-6727')
+ON CONFLICT (id) DO NOTHING;
+INSERT INTO api.taxis (id, plate)
+VALUES (7088, 'BCMG-3071')
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO api.trajectories (taxi_id, date, latitude, longitude)
+VALUES ('6418', '2008-02-02 14:22:40', 116.30508, 39.96525);
+INSERT INTO api.trajectories (taxi_id, date, latitude, longitude)
+VALUES ('6418', '2008-02-02 14:25:54', 116.3043, 39.9622);
+INSERT INTO api.trajectories (taxi_id, date, latitude, longitude)
+VALUES ('6598', '2008-02-02 13:40:26', 116.29308, 39.8804);
+INSERT INTO api.trajectories (taxi_id, date, latitude, longitude)
+VALUES ('7088', '2008-02-02 14:36:10', 116.44724, 39.89008);
+
+INSERT INTO api.roles (role_name)
+VALUES ('ADMIN');
+INSERT INTO api.roles (role_name)
+VALUES ('DEVELOPER');
+INSERT INTO api.roles (role_name)
+VALUES ('USER');
+INSERT INTO api.roles (role_name)
+VALUES ('GUEST');
+
+-- Insert USERS
+INSERT INTO api.users (name, email, password, is_enabled, account_non_expired, account_non_locked,
+                       credentials_non_expired, role_id)
+SELECT 'admin',
+       'admin@test.com',
+       '$2a$10$/R06Zz2awp87D/iFBD.cH.QoMZUAJEd59fsZOgK668tujGem1IEuy',
+       true,
+       true,
+       true,
+       true,
+       r.id
+FROM api.roles r
+WHERE r.role_name = 'ADMIN';

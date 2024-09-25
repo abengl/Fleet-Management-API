@@ -1,10 +1,10 @@
 package com.fleetmanagement.api_rest.business.service;
 
 import com.fleetmanagement.api_rest.business.exception.ValueNotFoundException;
-import com.fleetmanagement.api_rest.persistence.entity.Taxi;
+import com.fleetmanagement.api_rest.persistence.entity.TaxiEntity;
 import com.fleetmanagement.api_rest.persistence.repository.TaxiRepository;
 import com.fleetmanagement.api_rest.presentation.dto.TaxiDTO;
-import com.fleetmanagement.api_rest.presentation.mapper.TaxiMapper;
+import com.fleetmanagement.api_rest.utils.mapper.TaxiMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +15,9 @@ import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for managing Taxi entities.
+ */
 @Service
 public class TaxiService {
 
@@ -27,6 +30,16 @@ public class TaxiService {
 		this.taxiMapper = taxiMapper;
 	}
 
+	/**
+	 * Retrieves a paginated list of TaxiDTOs, optionally filtered by plate.
+	 *
+	 * @param plate the plate to filter by (optional)
+	 * @param page  the page number to retrieve
+	 * @param limit the number of items per page
+	 * @return a list of TaxiDTOs
+	 * @throws InvalidParameterException if page is negative or limit is non-positive
+	 * @throws ValueNotFoundException    if no taxis are found with the specified plate
+	 */
 	public List<TaxiDTO> getTaxis(String plate, int page, int limit) {
 		if (page < 0) {
 			throw new InvalidParameterException("Page number cannot be negative");
@@ -36,7 +49,7 @@ public class TaxiService {
 		}
 
 		Pageable pageable = PageRequest.of(page, limit);
-		Page<Taxi> taxisPage;
+		Page<TaxiEntity> taxisPage;
 
 		if (plate == null || plate.isEmpty()) {
 			taxisPage = taxiRepository.findAll(pageable);
@@ -48,6 +61,5 @@ public class TaxiService {
 		}
 
 		return taxisPage.stream().map(taxiMapper::toTaxiDTO).collect(Collectors.toList());
-
 	}
 }

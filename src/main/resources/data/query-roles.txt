@@ -1,0 +1,9 @@
+SELECT
+    u.name,
+    r.role_name AS role_name
+FROM
+    api.users u
+INNER JOIN
+    api.roles r ON u.role_id = r.id
+WHERE
+	u.name = 'admin';
