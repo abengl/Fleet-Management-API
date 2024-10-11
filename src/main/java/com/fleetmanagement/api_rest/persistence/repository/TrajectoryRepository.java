@@ -33,17 +33,18 @@ public interface TrajectoryRepository extends JpaRepository<TrajectoryEntity, In
 	Page<TrajectoryEntity> findByTaxiId_IdAndDate(@Param("taxiId") Integer taxiId, @Param("date") Date date,
 												  Pageable pageable);
 
+
 	/**
-	 * Finds the latest locations of all taxis.
+	 * Finds the latest trajectory locations for each taxi.
 	 * <p>
-	 * This query retrieves the most recent trajectory record for each taxi. It uses a subquery
-	 * to find the maximum date for each taxi and then selects the corresponding trajectory record.
+	 * This query retrieves the most recent trajectory record for each taxi,
+	 * ordered by taxi ID and date in descending order.
 	 *
 	 * @param pageable the pagination information
 	 * @return a Page of the latest TrajectoryEntities for each taxi
 	 */
-	@Query("SELECT t FROM TrajectoryEntity t WHERE t.date = (SELECT MAX(t2.date) FROM TrajectoryEntity t2 WHERE t2" +
-			".taxiId.id = t.taxiId.id)")
+	@Query(value = "SELECT DISTINCT ON (t2.taxi_id) t2.* FROM api.trajectories t2 ORDER BY t2.taxi_id, t2.date DESC",
+			nativeQuery = true)
 	Page<TrajectoryEntity> findLatestLocations(Pageable pageable);
 
 }
