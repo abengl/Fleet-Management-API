@@ -3,6 +3,7 @@ package com.fleetmanagement.api_rest.presentation.controller;
 import com.fleetmanagement.api_rest.business.service.TrajectoryService;
 import com.fleetmanagement.api_rest.presentation.dto.LatestTrajectoryDTO;
 import com.fleetmanagement.api_rest.presentation.dto.TrajectoryDTO;
+import com.fleetmanagement.api_rest.presentation.dto.TrajectoryExportResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -61,6 +62,19 @@ public class TrajectoryController {
 
 		List<LatestTrajectoryDTO> latestTrajectories = trajectoryService.getLatestTrajectories(page, limit);
 		return ResponseEntity.ok(latestTrajectories);
+
+	}
+
+	@GetMapping("/export")
+	public ResponseEntity<List<TrajectoryExportResponse>> getAllTrajectoriesToExport(
+			@RequestParam(name = "taxiId", required = false) Integer taxiId,
+			@RequestParam(name = "date", required = false) String date,
+			@RequestParam(name = "page", defaultValue = "0") int page,
+			@RequestParam(name = "limit", defaultValue = "10") int limit) {
+
+		List<TrajectoryExportResponse> trajectories = trajectoryService.getTrajectoriesExport(taxiId, date, page,
+				limit);
+		return ResponseEntity.ok(trajectories);
 
 	}
 }

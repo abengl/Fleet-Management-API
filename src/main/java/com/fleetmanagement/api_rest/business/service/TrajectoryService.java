@@ -7,7 +7,9 @@ import com.fleetmanagement.api_rest.persistence.repository.TaxiRepository;
 import com.fleetmanagement.api_rest.persistence.repository.TrajectoryRepository;
 import com.fleetmanagement.api_rest.presentation.dto.LatestTrajectoryDTO;
 import com.fleetmanagement.api_rest.presentation.dto.TrajectoryDTO;
+import com.fleetmanagement.api_rest.presentation.dto.TrajectoryExportResponse;
 import com.fleetmanagement.api_rest.utils.mapper.LatestTrajectoryMapper;
+import com.fleetmanagement.api_rest.utils.mapper.TrajectoryExportMapper;
 import com.fleetmanagement.api_rest.utils.mapper.TrajectoryMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,14 +34,17 @@ public class TrajectoryService {
 	private final TaxiRepository taxiRepository;
 	private final TrajectoryMapper trajectoryMapper;
 	private final LatestTrajectoryMapper latestTrajectoryMapper;
+	private final TrajectoryExportMapper trajectoryExportMapper;
 
 	@Autowired
 	public TrajectoryService(TrajectoryRepository trajectoryRepository, TaxiRepository taxiRepository,
-							 TrajectoryMapper trajectoryMapper, LatestTrajectoryMapper latestTrajectoryMapper) {
+							 TrajectoryMapper trajectoryMapper, LatestTrajectoryMapper latestTrajectoryMapper,
+							 TrajectoryExportMapper trajectoryExportMapper) {
 		this.trajectoryRepository = trajectoryRepository;
 		this.taxiRepository = taxiRepository;
 		this.trajectoryMapper = trajectoryMapper;
 		this.latestTrajectoryMapper = latestTrajectoryMapper;
+		this.trajectoryExportMapper = trajectoryExportMapper;
 	}
 
 	/**
@@ -95,5 +100,35 @@ public class TrajectoryService {
 		Page<TrajectoryEntity> trajectoryPage = trajectoryRepository.findLatestLocations(pageable);
 
 		return trajectoryPage.stream().map(latestTrajectoryMapper::toLatestTrajectoryDTO).collect(Collectors.toList());
+	}
+
+	public List<TrajectoryExportResponse> getTrajectoriesExport(Integer taxiId, String dateString, int page,
+																int limit) {
+
+		if (taxiId == null) {
+			throw new InvalidParameterException("Missing taxiId value.");
+		}
+
+		if (!taxiRepository.existsById(taxiId)) {
+			throw new ValueNotFoundException("Taxi ID " + taxiId + " not found.");
+		}
+
+		if (dateString == null || dateString.isEmpty()) {
+			throw new InvalidParameterException("Missing date value.");
+		}
+
+		Date date;
+		try {
+			SimpleDateFormat formatStringToDate = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+			date = formatStringToDate.parse(dateString);
+		} catch (ParseException e) {
+			throw new InvalidFormatException("Incorrect date value: " + dateString);
+		}
+
+		Pageable pageable = PageRequest.of(page, limit);
+		Page<TrajectoryEntity> trajectoryPage = trajectoryRepository.findByTaxiId_IdAndDate(taxiId, date, pageable);
+
+		return trajectoryPage.stream().map(trajectoryExportMapper::toTrajectoryExportResponse)
+				.collect(Collectors.toList());
 	}
 }
