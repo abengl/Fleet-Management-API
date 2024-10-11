@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Repository interface for accessing TrajectoryEntity data from the database.
@@ -33,6 +34,19 @@ public interface TrajectoryRepository extends JpaRepository<TrajectoryEntity, In
 	Page<TrajectoryEntity> findByTaxiId_IdAndDate(@Param("taxiId") Integer taxiId, @Param("date") Date date,
 												  Pageable pageable);
 
+	/**
+	 * Finds TrajectoryEntities by taxi ID and date.
+	 * <p>
+	 * This query retrieves all trajectory records for a specific taxi on a given date.
+	 * The query uses the SQL FUNCTION 'DATE' to ensure that the date comparison is done
+	 * at the date level, ignoring the time part.
+	 *
+	 * @param taxiId the ID of the taxi
+	 * @param date   the date to search for
+	 * @return a List of TrajectoryEntities matching the search criteria
+	 */
+	@Query("SELECT t FROM TrajectoryEntity t WHERE t.taxiId.id = :taxiId AND FUNCTION('DATE', t.date) = :date")
+	List<TrajectoryEntity> findByTaxiId_IdAndDate(@Param("taxiId") Integer taxiId, @Param("date") Date date);
 
 	/**
 	 * Finds the latest trajectory locations for each taxi.

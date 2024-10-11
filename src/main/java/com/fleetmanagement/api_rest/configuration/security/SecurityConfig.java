@@ -46,6 +46,8 @@ public class SecurityConfig {
 					http.requestMatchers(HttpMethod.GET, "/trajectories").hasAnyRole("ADMIN", "DEVELOPER", "USER");
 					http.requestMatchers(HttpMethod.GET, "/trajectories/latest")
 							.hasAnyRole("ADMIN", "DEVELOPER", "USER");
+					http.requestMatchers(HttpMethod.GET, "/trajectories/export")
+							.hasAnyRole("ADMIN", "DEVELOPER", "USER");
 					http.requestMatchers(HttpMethod.GET, "/users").hasAnyRole("ADMIN", "DEVELOPER");
 					http.requestMatchers(HttpMethod.POST, "/users").hasAnyRole("ADMIN", "DEVELOPER");
 					http.requestMatchers(HttpMethod.PATCH, "/users/**").hasAnyRole("ADMIN", "DEVELOPER");
