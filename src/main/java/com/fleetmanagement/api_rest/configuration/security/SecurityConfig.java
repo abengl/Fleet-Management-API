@@ -36,10 +36,10 @@ public class SecurityConfig {
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
-		System.out.println("SecurityConfig -> SecurityFilterChain -> httpSecurity ");
 		return httpSecurity.csrf(AbstractHttpConfigurer::disable)
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(http -> {
+					http.requestMatchers(HttpMethod.GET, "/actuator/health").permitAll();
 					http.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
 					http.requestMatchers(HttpMethod.GET, "/taxis/**").hasAnyRole("ADMIN", "DEVELOPER", "USER",
 							"GUEST");
@@ -66,7 +66,6 @@ public class SecurityConfig {
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
 			throws Exception {
 
-		System.out.println("SecurityConfig -> AuthenticationManager -> authenticationConfiguration");
 		return authenticationConfiguration.getAuthenticationManager();
 	}
 
@@ -79,7 +78,6 @@ public class SecurityConfig {
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 
-		System.out.println("SecurityConfig -> PasswordEncoder");
 		return new BCryptPasswordEncoder();
 	}
 

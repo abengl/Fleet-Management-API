@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS api.users
 (
     id                      integer                NOT NULL GENERATED ALWAYS AS IDENTITY,
     name                    character varying(255) NOT NULL,
-    email                   character varying(255) NOT NULL,
+    email character varying(255) NOT NULL UNIQUE,
     password                character varying(255) NOT NULL,
     is_enabled              boolean                NOT NULL,
     account_non_expired     boolean                NOT NULL,
@@ -48,3 +48,5 @@ CREATE TABLE IF NOT EXISTS api.users
     CONSTRAINT users_role_id_fkey FOREIGN KEY (role_id)
         REFERENCES api.roles (id)
 );
+
+CREATE INDEX idx_taxi_id_date ON api.trajectories (taxi_id, date DESC);

@@ -42,7 +42,7 @@ public class UserDetailService implements UserDetailsService {
 	 * @return AuthResponse containing the JWT token and user details
 	 */
 	public AuthResponse loginUser(AuthLoginRequest authLoginRequest) {
-		System.out.println("UserDetailService -> loginUser -> authLoginRequest " + authLoginRequest);
+
 		String email = authLoginRequest.email();
 		String password = authLoginRequest.password();
 
@@ -68,7 +68,7 @@ public class UserDetailService implements UserDetailsService {
 	 * @throws BadCredentialsException if the password is incorrect
 	 */
 	public Authentication authenticate(String email, String password) {
-		System.out.println("UserDetailService -> authenticate -> email " + email + " password " + password);
+
 		UserDetails userDetails = this.loadUserByUsername(email);
 
 		if (!passwordEncoder.matches(password, userDetails.getPassword())) {
@@ -90,7 +90,7 @@ public class UserDetailService implements UserDetailsService {
 	 */
 	@Override
 	public UserDetails loadUserByUsername(String email) {
-		System.out.println("UserDetailService -> loadUserByUsername -> email " + email);
+
 		UserEntity userEntity = userRepository.findByEmail(email)
 				.orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
