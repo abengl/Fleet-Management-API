@@ -7,7 +7,6 @@ import com.fleetmanagement.api_rest.presentation.dto.LatestTrajectoryDTO;
 import com.fleetmanagement.api_rest.presentation.dto.TrajectoryDTO;
 import com.fleetmanagement.api_rest.presentation.dto.TrajectoryExportResponse;
 import com.fleetmanagement.api_rest.utils.ExcelExporter;
-import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -42,14 +41,12 @@ public class TrajectoryController {
 	 * @param date   the date of the trajectories (optional)
 	 * @param email  the recipient email address (required)
 	 * @return a ResponseEntity indicating the result of the email sending operation
-	 * @throws MessagingException if there is an error while sending the email
 	 */
 
 	@GetMapping("/sendmail")
 	public ResponseEntity<?> getAllTrajectoriesToEmail(@RequestParam(name = "taxiId", required = false) Integer taxiId,
 													   @RequestParam(name = "date", required = false) String date,
-													   @RequestParam(name = "email", required = true) String email)
-			throws MessagingException {
+													   @RequestParam(name = "email", required = false) String email) {
 
 		List<TrajectoryExportResponse> trajectories = trajectoryService.getExportData(taxiId, date);
 

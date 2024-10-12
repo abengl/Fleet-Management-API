@@ -1,7 +1,10 @@
 package com.fleetmanagement.api_rest.business.service;
 
+import com.fleetmanagement.api_rest.business.exception.ValueNotFoundException;
+import com.fleetmanagement.api_rest.persistence.repository.TaxiRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
@@ -13,22 +16,24 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Service
+@RequiredArgsConstructor
 public class EmailService {
 	private final JavaMailSender mailSender;
+	private final TaxiRepository taxiRepository;
 
 	@Value("${spring.mail.username}")
 	private String emailUsername;
 
-	public EmailService(JavaMailSender mailSender) {
-		this.mailSender = mailSender;
-	}
 
 	public void sendWithAttachmentExcel(String email, Integer taxiId, String date, ByteArrayOutputStream excelStream)
 			throws MessagingException {
+
+		validateInput(taxiId, date, email);
 
 		MimeMessage message = mailSender.createMimeMessage();
 		MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, true);
@@ -92,4 +97,22 @@ public class EmailService {
 		mailSender.send(message);
 
 	}
+
+	private void validateInput(Integer taxiId, String dateString, String email) {
+		if (taxiId == null) {
+			throw new InvalidParameterException("Missing taxiId value.");
+		}
+
+		if (!taxiRepository.existsById(taxiId)) {
+			throw new ValueNotFoundException("Taxi ID " + taxiId + " not found.");
+		}
+
+		if (dateString == null || dateString.isEmpty()) {
+			throw new InvalidParameterException("Missing date value.");
+		}
+		if (email == null || email.isEmpty()) {
+			throw new InvalidParameterException("Missing email value.");
+		}
+	}
+
 }
