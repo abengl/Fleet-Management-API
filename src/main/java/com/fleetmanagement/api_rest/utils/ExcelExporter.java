@@ -12,6 +12,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Component;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -27,16 +28,20 @@ public class ExcelExporter {
 		workbook = new XSSFWorkbook();
 	}
 
-	public void generateExcelFile(HttpServletResponse response) {
+	public ByteArrayOutputStream generateExcelFileAsStream() {
 		writeHeader();
 		write();
-		try (ServletOutputStream outputStream = response.getOutputStream()) {
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		try {
 			workbook.write(outputStream);
 			workbook.close();
+//			try (FileOutputStream fos = new FileOutputStream("src/main/resources/temp/debug_trajectories.xlsx")) {
+//				outputStream.writeTo(fos);
+//			}
 		} catch (IOException e) {
 			throw new FileGenerationException(e.getMessage());
 		}
-
+		return outputStream;
 	}
 
 	private void writeHeader() {
@@ -45,7 +50,7 @@ public class ExcelExporter {
 		CellStyle style = workbook.createCellStyle();
 		XSSFFont font = workbook.createFont();
 		font.setBold(true);
-		font.setFontHeight(16);
+		font.setFontHeight(15);
 		style.setFont(font);
 		createCell(row, 0, "Taxi ID", style);
 		createCell(row, 1, "Plate", style);
@@ -59,7 +64,7 @@ public class ExcelExporter {
 		int rowCount = 1;
 		CellStyle style = workbook.createCellStyle();
 		XSSFFont font = workbook.createFont();
-		font.setFontHeight(14);
+		font.setFontHeight(12);
 		style.setFont(font);
 		for (TrajectoryExportResponse trajectory : trajectoriesList) {
 			Row row = sheet.createRow(rowCount++);
@@ -69,6 +74,17 @@ public class ExcelExporter {
 			createCell(row, columnCount++, trajectory.date(), style);
 			createCell(row, columnCount++, trajectory.latitude(), style);
 			createCell(row, columnCount, trajectory.longitude(), style);
+		}
+	}
+
+	public void generateExcelFileAsXls(HttpServletResponse response) {
+		writeHeader();
+		write();
+		try (ServletOutputStream outputStream = response.getOutputStream()) {
+			workbook.write(outputStream);
+			workbook.close();
+		} catch (IOException e) {
+			throw new FileGenerationException(e.getMessage());
 		}
 	}
 

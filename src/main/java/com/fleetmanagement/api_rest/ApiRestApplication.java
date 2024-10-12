@@ -48,6 +48,10 @@ public class ApiRestApplication {
 		System.setProperty("JWT_PRIVATE_KEY", Objects.requireNonNull(dotenv.get("JWT_PRIVATE_KEY")));
 		System.setProperty("JWT_USER_GENERATOR", Objects.requireNonNull(dotenv.get("JWT_USER_GENERATOR")));
 		System.setProperty("JWT_EXPIRATION_TIME", Objects.requireNonNull(dotenv.get("JWT_EXPIRATION_TIME")));
+		System.setProperty("EMAIL_USERNAME", Objects.requireNonNull(dotenv.get("EMAIL_USERNAME")));
+		System.setProperty("EMAIL_PASSWORD", Objects.requireNonNull(dotenv.get("EMAIL_PASSWORD")));
+		System.setProperty("EMAIL_HOST", Objects.requireNonNull(dotenv.get("EMAIL_HOST")));
+		System.setProperty("EMAIL_PORT", Objects.requireNonNull(dotenv.get("EMAIL_PORT")));
 
 		SpringApplication.run(ApiRestApplication.class, args);
 	}
