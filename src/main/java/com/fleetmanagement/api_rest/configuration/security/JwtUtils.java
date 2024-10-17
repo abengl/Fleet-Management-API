@@ -37,7 +37,6 @@ public class JwtUtils {
 	 */
 	public String createToken(Authentication authentication) {
 
-		System.out.println("JwtUtils -> createToken -> authentication");
 		Algorithm algorithm = Algorithm.HMAC256(this.privateKey);
 
 		String username = authentication.getPrincipal().toString();
@@ -63,11 +62,8 @@ public class JwtUtils {
 	 */
 	public DecodedJWT validateToken(String token) {
 
-		System.out.println("JwtUtils -> validateToken ");
-
 		try {
 
-			System.out.println("JwtUtils -> validateToken -> try ");
 			Algorithm algorithm = Algorithm.HMAC256(this.privateKey);
 
 			DecodedJWT decodedJWT = JWT.require(algorithm).withIssuer(this.userGenerator).build().verify(token);
@@ -75,27 +71,22 @@ public class JwtUtils {
 
 		} catch (JWTDecodeException e) {
 
-			System.out.println("JwtUtils -> validateToken -> catch JWTDecodeException ");
 			throw new InvalidTokenException("Invalid token format.");
 
 		} catch (TokenExpiredException e) {
 
-			System.out.println("JwtUtils -> validateToken -> catch TokenExpiredException ");
 			throw new InvalidTokenException("Token has expired.");
 
 		} catch (SignatureVerificationException e) {
 
-			System.out.println("JwtUtils -> validateToken -> catch SignatureVerificationException ");
 			throw new InvalidTokenException("Invalid token signature.");
 
 		} catch (AlgorithmMismatchException e) {
 
-			System.out.println("JwtUtils -> validateToken -> catch AlgorithmMismatchException ");
 			throw new InvalidTokenException("Algorithm mismatch.");
 
 		} catch (JWTVerificationException e) {
 
-			System.out.println("JwtUtils -> validateToken -> catch JWTVerificationException ");
 			throw new InvalidTokenException("Token verification failed.");
 
 		}
@@ -109,7 +100,6 @@ public class JwtUtils {
 	 */
 	public String extractUsername(DecodedJWT decodedJWT) {
 
-		System.out.println("JwtUtils -> extractUsername ->  ");
 		return decodedJWT.getSubject();
 	}
 
@@ -122,7 +112,6 @@ public class JwtUtils {
 	 */
 	public Claim getSpecificClaim(DecodedJWT decodedJWT, String claimName) {
 
-		System.out.println("JwtUtils -> getSpecificClaim -> ");
 		return decodedJWT.getClaim(claimName);
 	}
 

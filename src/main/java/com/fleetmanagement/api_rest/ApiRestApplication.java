@@ -1,7 +1,10 @@
 package com.fleetmanagement.api_rest;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import java.util.Objects;
 
 /**
  * The entry point of the Fleet Management REST API application.
@@ -36,6 +39,20 @@ public class ApiRestApplication {
 	 * @param args command-line arguments passed to the application
 	 */
 	public static void main(String[] args) {
+
+		Dotenv dotenv = Dotenv.configure().directory("src/main/resources").load();
+
+		System.setProperty("DB_URL", Objects.requireNonNull(dotenv.get("DB_URL")));
+		System.setProperty("DB_USERNAME", Objects.requireNonNull(dotenv.get("DB_USERNAME")));
+		System.setProperty("DB_PASSWORD", Objects.requireNonNull(dotenv.get("DB_PASSWORD")));
+		System.setProperty("JWT_PRIVATE_KEY", Objects.requireNonNull(dotenv.get("JWT_PRIVATE_KEY")));
+		System.setProperty("JWT_USER_GENERATOR", Objects.requireNonNull(dotenv.get("JWT_USER_GENERATOR")));
+		System.setProperty("JWT_EXPIRATION_TIME", Objects.requireNonNull(dotenv.get("JWT_EXPIRATION_TIME")));
+		System.setProperty("EMAIL_USERNAME", Objects.requireNonNull(dotenv.get("EMAIL_USERNAME")));
+		System.setProperty("EMAIL_PASSWORD", Objects.requireNonNull(dotenv.get("EMAIL_PASSWORD")));
+		System.setProperty("EMAIL_HOST", Objects.requireNonNull(dotenv.get("EMAIL_HOST")));
+		System.setProperty("EMAIL_PORT", Objects.requireNonNull(dotenv.get("EMAIL_PORT")));
+
 		SpringApplication.run(ApiRestApplication.class, args);
 	}
 

@@ -531,6 +531,20 @@ VALUES ('6418', '2008-02-03 15:28:16', 116.31561, 39.96547);
 INSERT INTO api.trajectories (taxi_id, date, latitude, longitude)
 VALUES ('6418', '2008-02-03 15:30:25', 116.32491, 39.96602);
 INSERT INTO api.trajectories (taxi_id, date, latitude, longitude)
+VALUES ('6418', '2008-02-03 16:45:49', 116.46066, 39.94301);
+INSERT INTO api.trajectories (taxi_id, date, latitude, longitude)
+VALUES ('6418', '2008-02-03 16:48:42', 116.45534, 39.94102);
+INSERT INTO api.trajectories (taxi_id, date, latitude, longitude)
+VALUES ('6418', '2008-02-03 16:50:51', 116.45552, 39.93396);
+INSERT INTO api.trajectories (taxi_id, date, latitude, longitude)
+VALUES ('6418', '2008-02-03 16:53:44', 116.45533, 39.9221);
+INSERT INTO api.trajectories (taxi_id, date, latitude, longitude)
+VALUES ('6418', '2008-02-03 16:55:53', 116.45555, 39.91378);
+INSERT INTO api.trajectories (taxi_id, date, latitude, longitude)
+VALUES ('6418', '2008-02-03 16:58:45', 116.45515, 39.88924);
+INSERT INTO api.trajectories (taxi_id, date, latitude, longitude)
+VALUES ('6418', '2008-02-03 17:00:54', 116.45472, 39.86875);
+INSERT INTO api.trajectories (taxi_id, date, latitude, longitude)
 VALUES ('6418', '2008-02-03 15:33:17', 116.34839, 39.96694);
 INSERT INTO api.trajectories (taxi_id, date, latitude, longitude)
 VALUES ('6418', '2008-02-03 15:35:26', 116.35122, 39.98016);
@@ -584,20 +598,6 @@ INSERT INTO api.trajectories (taxi_id, date, latitude, longitude)
 VALUES ('6418', '2008-02-03 16:38:39', 116.45591, 39.93166);
 INSERT INTO api.trajectories (taxi_id, date, latitude, longitude)
 VALUES ('6418', '2008-02-03 16:43:40', 116.46072, 39.9431);
-INSERT INTO api.trajectories (taxi_id, date, latitude, longitude)
-VALUES ('6418', '2008-02-03 16:45:49', 116.46066, 39.94301);
-INSERT INTO api.trajectories (taxi_id, date, latitude, longitude)
-VALUES ('6418', '2008-02-03 16:48:42', 116.45534, 39.94102);
-INSERT INTO api.trajectories (taxi_id, date, latitude, longitude)
-VALUES ('6418', '2008-02-03 16:50:51', 116.45552, 39.93396);
-INSERT INTO api.trajectories (taxi_id, date, latitude, longitude)
-VALUES ('6418', '2008-02-03 16:53:44', 116.45533, 39.9221);
-INSERT INTO api.trajectories (taxi_id, date, latitude, longitude)
-VALUES ('6418', '2008-02-03 16:55:53', 116.45555, 39.91378);
-INSERT INTO api.trajectories (taxi_id, date, latitude, longitude)
-VALUES ('6418', '2008-02-03 16:58:45', 116.45515, 39.88924);
-INSERT INTO api.trajectories (taxi_id, date, latitude, longitude)
-VALUES ('6418', '2008-02-03 17:00:54', 116.45472, 39.86875);
 INSERT INTO api.trajectories (taxi_id, date, latitude, longitude)
 VALUES ('6418', '2008-02-03 17:03:47', 116.44725, 39.86055);
 INSERT INTO api.trajectories (taxi_id, date, latitude, longitude)

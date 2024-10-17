@@ -31,7 +31,7 @@ import java.util.Map;
  */
 public class JwtTokenValidator extends OncePerRequestFilter {
 
-	private final List<String> excludedPaths = List.of("/auth/login", "/auth/**");
+	private final List<String> excludedPaths = List.of("/actuator/health", "/auth/login", "/auth/**");
 	private final JwtUtils jwtUtils;
 
 	public JwtTokenValidator(JwtUtils jwtUtils) {
@@ -47,7 +47,7 @@ public class JwtTokenValidator extends OncePerRequestFilter {
 	 */
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) {
-		System.out.println("JwtTokenValidator -> shouldNotFilter ");
+
 		String path = request.getRequestURI();
 		return excludedPaths.stream().anyMatch(path::startsWith);
 	}
@@ -68,13 +68,10 @@ public class JwtTokenValidator extends OncePerRequestFilter {
 	protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
 									@NonNull FilterChain filterChain) throws ServletException, IOException {
 
-		System.out.println("JwtTokenValidator -> doFilterInternal ");
-
 		String jwtToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 
 		if (jwtToken == null || !jwtToken.startsWith("Bearer ")) {
 
-			System.out.println("JwtTokenValidator -> doFilterInternal -> if jwtToken == null ");
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			Map<String, String> errorResponse = new HashMap<>();
 			errorResponse.put("error", "No token provided.");
@@ -85,20 +82,16 @@ public class JwtTokenValidator extends OncePerRequestFilter {
 
 		try {
 
-			System.out.println("JwtTokenValidator -> doFilterInternal -> try ");
 			jwtToken = jwtToken.substring(7);
 
 			DecodedJWT decodedJWT = jwtUtils.validateToken(jwtToken);
-			System.out.println("JwtTokenValidator -> doFilterInternal -> decoded jwt -> " + decodedJWT);
 
 			String username = jwtUtils.extractUsername(decodedJWT);
-			System.out.println("JwtTokenValidator -> doFilterInternal -> username -> " + username);
 
 			String stringAuthorities = jwtUtils.getSpecificClaim(decodedJWT, "authorities").asString();
 
 			Collection<? extends GrantedAuthority> authorities =
 					AuthorityUtils.commaSeparatedStringToAuthorityList(stringAuthorities);
-			System.out.println("JwtTokenValidator -> doFilterInternal -> authorities -> " + authorities);
 
 			SecurityContext context = SecurityContextHolder.createEmptyContext();
 			Authentication authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
@@ -107,7 +100,6 @@ public class JwtTokenValidator extends OncePerRequestFilter {
 
 			filterChain.doFilter(request, response);
 		} catch (InvalidTokenException e) {
-			System.out.println("JwtTokenValidator -> doFilterInternal -> catch InvalidTokenException");
 
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			Map<String, String> errorResponse = new HashMap<>();

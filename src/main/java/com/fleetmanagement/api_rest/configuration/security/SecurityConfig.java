@@ -36,15 +36,17 @@ public class SecurityConfig {
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
-		System.out.println("SecurityConfig -> SecurityFilterChain -> httpSecurity ");
 		return httpSecurity.csrf(AbstractHttpConfigurer::disable)
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(http -> {
+					http.requestMatchers(HttpMethod.GET, "/actuator/health").permitAll();
 					http.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
 					http.requestMatchers(HttpMethod.GET, "/taxis/**").hasAnyRole("ADMIN", "DEVELOPER", "USER",
 							"GUEST");
 					http.requestMatchers(HttpMethod.GET, "/trajectories").hasAnyRole("ADMIN", "DEVELOPER", "USER");
 					http.requestMatchers(HttpMethod.GET, "/trajectories/latest")
+							.hasAnyRole("ADMIN", "DEVELOPER", "USER");
+					http.requestMatchers(HttpMethod.GET, "/trajectories/export")
 							.hasAnyRole("ADMIN", "DEVELOPER", "USER");
 					http.requestMatchers(HttpMethod.GET, "/users").hasAnyRole("ADMIN", "DEVELOPER");
 					http.requestMatchers(HttpMethod.POST, "/users").hasAnyRole("ADMIN", "DEVELOPER");
@@ -66,7 +68,6 @@ public class SecurityConfig {
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
 			throws Exception {
 
-		System.out.println("SecurityConfig -> AuthenticationManager -> authenticationConfiguration");
 		return authenticationConfiguration.getAuthenticationManager();
 	}
 
@@ -79,7 +80,6 @@ public class SecurityConfig {
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 
-		System.out.println("SecurityConfig -> PasswordEncoder");
 		return new BCryptPasswordEncoder();
 	}
 

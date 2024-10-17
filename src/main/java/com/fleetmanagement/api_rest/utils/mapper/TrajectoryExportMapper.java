@@ -1,28 +1,16 @@
 package com.fleetmanagement.api_rest.utils.mapper;
 
 import com.fleetmanagement.api_rest.persistence.entity.TrajectoryEntity;
-import com.fleetmanagement.api_rest.presentation.dto.TrajectoryDTO;
+import com.fleetmanagement.api_rest.presentation.dto.TrajectoryExportResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-/**
- * Mapper interface for converting between TrajectoryEntity and TrajectoryDTO.
- * Utilizes MapStruct for automatic mapping.
- */
 @Mapper(componentModel = "spring")
-public interface TrajectoryMapper {
-
-	/**
-	 * Converts a TrajectoryEntity to a TrajectoryDTO.
-	 *
-	 * @param trajectoryEntity the TrajectoryEntity to convert
-	 * @return the converted TrajectoryDTO
-	 */
+public interface TrajectoryExportMapper {
 	@Mapping(source = "taxiId.id", target = "taxiId")
 	@Mapping(source = "taxiId.plate", target = "plate")
 	@Mapping(source = "date", target = "date", dateFormat = "yyyy-MM-dd HH:mm:ss")
 	@Mapping(source = "latitude", target = "latitude")
 	@Mapping(source = "longitude", target = "longitude")
-	TrajectoryDTO toTrajectoryDTO(TrajectoryEntity trajectoryEntity);
-
+	TrajectoryExportResponse toTrajectoryExportResponse(TrajectoryEntity trajectoryEntity);
 }

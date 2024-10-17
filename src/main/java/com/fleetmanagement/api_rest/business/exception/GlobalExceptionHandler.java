@@ -19,6 +19,11 @@ import java.security.InvalidParameterException;
  */
 @ControllerAdvice
 public class GlobalExceptionHandler {
+	@ExceptionHandler(FileGenerationException.class)
+	public ResponseEntity<ErrorResponse> handleFileGenerationException(FileGenerationException ex) {
+		ErrorResponse errorResponse = new ErrorResponse("Error generating excel file. " + ex.getMessage());
+		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
 
 	@ExceptionHandler(InvalidTokenException.class)
 	public ResponseEntity<String> handleInvalidTokenException(InvalidTokenException ex) {

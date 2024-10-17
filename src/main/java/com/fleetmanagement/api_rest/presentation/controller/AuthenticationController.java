@@ -29,7 +29,7 @@ public class AuthenticationController {
 	 */
 	@PostMapping("/login")
 	public ResponseEntity<AuthResponse> login(@RequestBody @Valid AuthLoginRequest userRequest) {
-		System.out.println("AuthenticationController -> login -> userRequest ");
+
 		AuthResponse response = userDetailService.loginUser(userRequest);
 		return ResponseEntity.ok(response);
 	}
