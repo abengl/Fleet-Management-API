@@ -1037,7 +1037,7 @@
                   "method": "GET",
                   "header": [],
                   "url": {
-                    "raw": "{{baseURL}}/trajectories/export?taxiId={{taxiIdExport}}&date={{date}}",
+                    "raw": "{{baseURL}}/trajectories/export?taxiId={{taxiIdExport}}&date={{dateExport}}",
                     "host": [
                       "{{baseURL}}"
                     ],
@@ -1052,7 +1052,7 @@
                       },
                       {
                         "key": "date",
-                        "value": "{{date}}"
+                        "value": "{{dateExport}}"
                       }
                     ]
                   }
@@ -1075,7 +1075,7 @@
                   "method": "GET",
                   "header": [],
                   "url": {
-                    "raw": "{{baseURL}}/trajectories/sendmail?taxiId={{taxiIdExport}}&date={{date}}&email={{emailDestination}}",
+                    "raw": "{{baseURL}}/trajectories/sendmail?taxiId={{taxiIdExport}}&date={{dateExport}}&email={{emailDestination}}",
                     "host": [
                       "{{baseURL}}"
                     ],
@@ -1090,7 +1090,7 @@
                       },
                       {
                         "key": "date",
-                        "value": "{{date}}"
+                        "value": "{{dateExport}}"
                       },
                       {
                         "key": "email",

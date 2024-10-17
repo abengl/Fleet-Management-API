@@ -48,17 +48,39 @@ public interface TrajectoryRepository extends JpaRepository<TrajectoryEntity, In
 	@Query("SELECT t FROM TrajectoryEntity t WHERE t.taxiId.id = :taxiId AND FUNCTION('DATE', t.date) = :date")
 	List<TrajectoryEntity> findByTaxiId_IdAndDate(@Param("taxiId") Integer taxiId, @Param("date") Date date);
 
+
 	/**
 	 * Finds the latest trajectory locations for each taxi.
 	 * <p>
 	 * This query retrieves the most recent trajectory record for each taxi,
 	 * ordered by taxi ID and date in descending order.
+	 * <p>
+	 * The query uses the `DISTINCT ON` clause to ensure that only the latest
+	 * record for each taxi is selected. The `ORDER BY` clause ensures that
+	 * the records are sorted by taxi ID and date in descending order, so the
+	 * latest record appears first for each taxi.
+	 * <p>
+	 * The `countQuery` is used to count the distinct taxi IDs, which is
+	 * necessary for pagination.
 	 *
 	 * @param pageable the pagination information
 	 * @return a Page of the latest TrajectoryEntities for each taxi
 	 */
 	@Query(value = "SELECT DISTINCT ON (t2.taxi_id) t2.* FROM api.trajectories t2 ORDER BY t2.taxi_id, t2.date DESC",
-			nativeQuery = true)
+			countQuery = "SELECT COUNT(DISTINCT t2.taxi_id) FROM api.trajectories t2", nativeQuery = true)
 	Page<TrajectoryEntity> findLatestLocations(Pageable pageable);
+
+//	/**
+//	 * Finds the latest trajectory locations for each taxi.
+//	 * <p>
+//	 * This query retrieves the most recent trajectory record for each taxi,
+//	 * ordered by taxi ID and date in descending order.
+//	 *
+//	 * @param pageable the pagination information
+//	 * @return a Page of the latest TrajectoryEntities for each taxi
+//	 */
+//	@Query(value = "SELECT DISTINCT ON (t2.taxi_id) t2.* FROM api.trajectories t2 ORDER BY t2.taxi_id, t2.date DESC",
+//			nativeQuery = true)
+//	Page<TrajectoryEntity> findLatestLocations(Pageable pageable);
 
 }
